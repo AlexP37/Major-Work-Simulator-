@@ -64,6 +64,7 @@ class Member():
         self.xPos = xPos
         self.yPos = yPos
         self.sense = sense
+        self.foodInRange = []
 
 species = []
 def makeMember():
@@ -116,17 +117,27 @@ while cont == False:
 
 
     for mem in species:
-        lockedOn = False
+
+        mem.foodInRange = []
+
         for f in food:
             distance = (((mem.xPos - f.xPos)**2) + ((mem.yPos - f.yPos)**2))**(1/2)
 
             if distance <= mem.size:
                 food.remove(f)
-
-            if distance <= mem.sense and lockedOn == False:
-                mem.xPos += (f.xPos - mem.xPos)/distance
-                mem.yPos += (f.yPos - mem.yPos)/distance
-                lockedOn = True
+            elif distance <= mem.sense:
+                mem.foodInRange.append(f)
+        
+        if mem.foodInRange != []:
+            closest = mem.foodInRange[0]
+            closestDistance = (((mem.xPos - closest.xPos)**2) + ((mem.yPos - closest.yPos)**2))**(1/2)
+            for item in range(1, len(mem.foodInRange)):
+                itemDistance = (((mem.xPos - mem.foodInRange[item].xPos)**2) + ((mem.yPos - mem.foodInRange[item].yPos)**2))**(1/2)
+                if itemDistance < closestDistance:
+                    closest = mem.foodInRange[item]   
+                    closestDistance = (((mem.xPos - closest.xPos)**2) + ((mem.yPos - closest.yPos)**2))**(1/2)         
+            mem.xPos += (closest.xPos - mem.xPos)/closestDistance
+            mem.yPos += (closest.yPos - mem.yPos)/closestDistance
 
 
     pygame.draw.rect(gameDisplay, (255,255,255), (0, 0, display_width, display_height))
