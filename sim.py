@@ -128,8 +128,10 @@ while cont == False:
             mem.foodInRange = []
 
             for storedFoodItem in mem.memoryBank:
-                if storedFoodItem not in food:
-                    mem.memoryBank.remove(storedFoodItem)
+                distanceFromItem = (((mem.xPos - storedFoodItem.xPos)**2) + ((mem.yPos - storedFoodItem.yPos)**2))**(1/2)
+                if distanceFromItem <= mem.size:
+                    if storedFoodItem not in food:
+                        mem.memoryBank.remove(storedFoodItem)
                 else:
                     mem.foodInRange.append(storedFoodItem)
 
