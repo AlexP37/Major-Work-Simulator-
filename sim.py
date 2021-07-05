@@ -56,7 +56,7 @@ class FoodPiece:
         self.color = color
 
 class Member():
-    def __init__(self, size, color, speed, stamina, xPos, yPos, sense, memory):
+    def __init__(self, size, color, speed, stamina, xPos, yPos, sense, memory, intelligence):
         self.size = size
         self.color = color
         self.speed = speed
@@ -67,6 +67,7 @@ class Member():
         self.foodInRange = []
         self.memory = memory
         self.memoryBank = []
+        self.intelligence = intelligence
 
 species = []
 def makeMember():
@@ -77,9 +78,10 @@ def makeMember():
     memSense = 100
     memXPos = random.randrange(15,950 - 15)
     memYPos = random.randrange(15,display_height - 15)
-    memMemory = 0
+    memMemory = 50
+    memIntelligence = 1
 
-    species.append(Member(memSize, memColor, memSpeed, memStamina, memXPos, memYPos, memSense, memMemory))
+    species.append(Member(memSize, memColor, memSpeed, memStamina, memXPos, memYPos, memSense, memMemory, memIntelligence))
 
 def makeFood():
     foodSize = 3
@@ -121,35 +123,40 @@ while cont == False:
 
     for mem in species:
 
-        mem.foodInRange = []
+        if mem.intelligence == 1:
 
-        for storedFoodItem in mem.memoryBank:
-           mem.foodInRange.append(storedFoodItem)
+            mem.foodInRange = []
 
-        for f in food:
-            distance = (((mem.xPos - f.xPos)**2) + ((mem.yPos - f.yPos)**2))**(1/2)
+            for storedFoodItem in mem.memoryBank:
+                if storedFoodItem not in food:
+                    mem.memoryBank.remove(storedFoodItem)
+                else:
+                    mem.foodInRange.append(storedFoodItem)
 
-            if distance <= mem.size:
-                food.remove(f)
-            elif distance <= mem.sense:
-                mem.foodInRange.append(f)
-        
-        if mem.foodInRange != []:
-            closest = mem.foodInRange[0]
-            closestDistance = (((mem.xPos - closest.xPos)**2) + ((mem.yPos - closest.yPos)**2))**(1/2)
-            for item in range(1, len(mem.foodInRange)):
-                itemDistance = (((mem.xPos - mem.foodInRange[item].xPos)**2) + ((mem.yPos - mem.foodInRange[item].yPos)**2))**(1/2)
-                if itemDistance < closestDistance:
-                    closest = mem.foodInRange[item]   
-                    closestDistance = (((mem.xPos - closest.xPos)**2) + ((mem.yPos - closest.yPos)**2))**(1/2)         
-            mem.xPos += (closest.xPos - mem.xPos)/closestDistance
-            mem.yPos += (closest.yPos - mem.yPos)/closestDistance
-        
-        if memory > 0:
-            for item in mem.foodInRange
-                if len(mem.memoryBank) < memory:
-                    if item not in mem.memoryBank:
-                        mem.memoryBank.append(item)
+            for f in food:
+                distance = (((mem.xPos - f.xPos)**2) + ((mem.yPos - f.yPos)**2))**(1/2)
+
+                if distance <= mem.size:
+                    food.remove(f)
+                elif distance <= mem.sense:
+                    mem.foodInRange.append(f)
+            
+            if mem.foodInRange != []:
+                closest = mem.foodInRange[0]
+                closestDistance = (((mem.xPos - closest.xPos)**2) + ((mem.yPos - closest.yPos)**2))**(1/2)
+                for item in range(1, len(mem.foodInRange)):
+                    itemDistance = (((mem.xPos - mem.foodInRange[item].xPos)**2) + ((mem.yPos - mem.foodInRange[item].yPos)**2))**(1/2)
+                    if itemDistance < closestDistance:
+                        closest = mem.foodInRange[item]   
+                        closestDistance = (((mem.xPos - closest.xPos)**2) + ((mem.yPos - closest.yPos)**2))**(1/2)         
+                mem.xPos += (closest.xPos - mem.xPos)/closestDistance
+                mem.yPos += (closest.yPos - mem.yPos)/closestDistance
+            
+            if mem.memory > 0:
+                for item in mem.foodInRange:
+                    if len(mem.memoryBank) < mem.memory:
+                        if item not in mem.memoryBank:
+                            mem.memoryBank.append(item)
 
                 
 
