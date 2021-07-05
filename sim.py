@@ -129,7 +129,7 @@ while cont == False:
 
             for storedFoodItem in mem.memoryBank:
                 distanceFromItem = (((mem.xPos - storedFoodItem.xPos)**2) + ((mem.yPos - storedFoodItem.yPos)**2))**(1/2)
-                if distanceFromItem <= mem.size:
+                if distanceFromItem <= mem.sense:
                     if storedFoodItem not in food:
                         mem.memoryBank.remove(storedFoodItem)
                 else:
