@@ -56,7 +56,7 @@ class FoodPiece:
         self.color = color
 
 class Member():
-    def __init__(self, size, color, speed, stamina, xPos, yPos, sense):
+    def __init__(self, size, color, speed, stamina, xPos, yPos, sense, memory):
         self.size = size
         self.color = color
         self.speed = speed
@@ -65,6 +65,8 @@ class Member():
         self.yPos = yPos
         self.sense = sense
         self.foodInRange = []
+        self.memory = memory
+        self.memoryBank = []
 
 species = []
 def makeMember():
@@ -75,8 +77,9 @@ def makeMember():
     memSense = 100
     memXPos = random.randrange(15,950 - 15)
     memYPos = random.randrange(15,display_height - 15)
+    memMemory = 0
 
-    species.append(Member(memSize, memColor, memSpeed, memStamina, memXPos, memYPos, memSense))
+    species.append(Member(memSize, memColor, memSpeed, memStamina, memXPos, memYPos, memSense, memMemory))
 
 def makeFood():
     foodSize = 3
@@ -120,6 +123,9 @@ while cont == False:
 
         mem.foodInRange = []
 
+        for storedFoodItem in mem.memoryBank:
+           mem.foodInRange.append(storedFoodItem)
+
         for f in food:
             distance = (((mem.xPos - f.xPos)**2) + ((mem.yPos - f.yPos)**2))**(1/2)
 
@@ -138,6 +144,15 @@ while cont == False:
                     closestDistance = (((mem.xPos - closest.xPos)**2) + ((mem.yPos - closest.yPos)**2))**(1/2)         
             mem.xPos += (closest.xPos - mem.xPos)/closestDistance
             mem.yPos += (closest.yPos - mem.yPos)/closestDistance
+        
+        if memory > 0:
+            for item in mem.foodInRange
+                if len(mem.memoryBank) < memory:
+                    if item not in mem.memoryBank:
+                        mem.memoryBank.append(item)
+
+                
+
 
 
     pygame.draw.rect(gameDisplay, (255,255,255), (0, 0, display_width, display_height))
