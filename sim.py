@@ -21,6 +21,13 @@ pygame.display.set_caption('Simulator')
 clock = pygame.time.Clock()
 gameDisplay.fill((255,255,255))
 
+def textBoxClear(text, size, position, color):
+    font = pygame.font.Font('LemonMilk.otf', size)
+    text = font.render(text, True, color)
+    textRect = text.get_rect()
+    textRect.center = position
+    gameDisplay.blit(text, textRect)
+
 class TextBox:
     def __init__(self, text, size, position, color, location, font):
         self.text = text
@@ -100,9 +107,134 @@ for i in range(1,10):
 
 foodCounter = 0
 
+## -------------------------------------- Intro --------------------------------------
+introCounter = 0
+while end == False:
+    clock.tick(60)
+    mx, my = pygame.mouse.get_pos()
+    introCounter += 1
+
+    if introCounter > 255:
+        pygame.draw.rect(gameDisplay, (255,255,255), (0, 0, display_width, display_height))
+    else:
+        pygame.draw.rect(gameDisplay, (introCounter,introCounter,introCounter), (0, 0, display_width, display_height))
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            pygame.font.quit()
+            quit()
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                end = True
+                cont = True
+                pygame.quit()
+                pygame.font.quit()
+                quit()
+
+            if event.key == pygame.K_b:
+                introCounter = 599
+    
+    if 300 < introCounter < 555:
+        heading = TextBox("A Pop! Software Solution", 40, (600,400), (introCounter - 300,introCounter - 300,introCounter - 300), "c", "LemonMilk.otf")
+    elif introCounter >= 555:
+        heading = TextBox("A Pop! Software Solution", 40, (600,400), (255,255,255), "c", "LemonMilk.otf")
+    else:
+        heading = TextBox("A Pop! Software Solution", 40, (600,400), (0,0,0), "c", "LemonMilk.otf")
+
+    
+    heading.display()
+
+    if introCounter > 600:
+        end = True
+
+    pygame.display.update()
+
+## -------------------------------------- Startup Button --------------------------------------
+cont = False
+mouseDown = False
+gameDisplay.fill((255,255,255))
+textBoxClear("Play", 300, (display_width / 2, display_height / 2), (0,0,0))
+while cont == False:
+    clock.tick(60)
+    for event in pygame.event.get():
+        mx, my = pygame.mouse.get_pos()
+        if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
+            cont = True
+            end = True
+            pygame.quit()
+            pygame.font.quit()
+            quit()
+        if 245 < mx < 967 and 277 < my < 529:
+            gameDisplay.fill((255,255,255))
+            textBoxClear("Play", 320, (display_width / 2, display_height / 2), (0,0,0))
+            if event.type == pygame.MOUSEBUTTONDOWN or mouseDown == True:
+                onPlayButton = True
+                mouseDown = True
+                gameDisplay.fill((255,255,255))
+                textBoxClear("Play", 320, (display_width / 2, display_height / 2), (0,100,0))
+            if event.type == pygame.MOUSEBUTTONUP and mouseDown == True:
+                if onPlayButton == True:
+                    cont = True
+                mouseDown = False
+                gameDisplay.fill((255,255,255))
+        else:
+            gameDisplay.fill((255,255,255))
+            textBoxClear("Play", 300, (display_width / 2, display_height / 2), (0,0,0))
+        if event.type == pygame.MOUSEBUTTONUP and mouseDown == True:
+            onPlayButton = False
+            mouseDown = False
+    pygame.display.update()
+
+
+## -------------------------------------- Main Menu --------------------------------------
+end = False
+while end == False:
+    clock.tick(60)
+    mx, my = pygame.mouse.get_pos()
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            pygame.font.quit()
+            quit()
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                cont = True
+                pygame.quit()
+                pygame.font.quit()
+                quit()
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if 250 < mx < 350:
+                if 250 < my < 350:
+                    end = True
+
+    pygame.draw.rect(gameDisplay, (255,255,255), (0, 0, display_width, display_height))
+
+    heading = TextBox("Species Simulator", 100, (50,100), (0,0,0), "l", "LemonMilk.otf")
+    heading.display()
+
+
+    title1 = TextBox("Species Survival", 100, (150,250), (50,50,50), "l", "LMLight.otf")
+    title1.display()
+
+
+    title2 = TextBox("U vs The World", 100, (150,400), (50,50,50), "l", "LMLight.otf")
+    title2.display()
+
+
+    title3 = TextBox("Creative Mode", 100, (150,550), (50,50,50), "l", "LMLight.otf")
+    title3.display()
+
+    pygame.display.update()
+
+
+
+## -------------------------------------- Basic Game --------------------------------------
 while cont == False:
     clock.tick(60)
     foodCounter += 1
+    mx, my = pygame.mouse.get_pos()
 
 
     for event in pygame.event.get():
@@ -117,7 +249,6 @@ while cont == False:
                 pygame.font.quit()
                 quit()
         if event.type == pygame.MOUSEBUTTONDOWN:
-            mx, my = pygame.mouse.get_pos()
             if 250 < mx < 350:
                 if 250 < my < 350:
                     cont = True
