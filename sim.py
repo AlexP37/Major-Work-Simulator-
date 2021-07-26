@@ -68,6 +68,10 @@ class Member():
         self.memory = memory
         self.memoryBank = []
         self.intelligence = intelligence
+        self.memberFood = 0
+
+        self.justEaten = 0
+        self.dying = 0
 
 species = []
 def makeMember():
@@ -108,7 +112,7 @@ while cont == False:
             quit()
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
-                end = True
+                cont = True
                 pygame.quit()
                 pygame.font.quit()
                 quit()
@@ -123,9 +127,19 @@ while cont == False:
 
     for mem in species:
 
-        if mem.intelligence == 1:
+        # if mem.intelligence == 1:
 
-            mem.foodInRange = []
+        mem.foodInRange = []
+        mem.dying += 0.05
+
+        if mem.dying > 150:
+            species.remove(mem)
+
+        else:
+            if mem.justEaten != 0:
+                mem.justEaten -= 5
+            
+            mem.color = (0 + mem.dying, 0 + mem.dying + mem.justEaten, 0 + mem.dying)
 
             for storedFoodItem in mem.memoryBank:
                 distanceFromItem = (((mem.xPos - storedFoodItem.xPos)**2) + ((mem.yPos - storedFoodItem.yPos)**2))**(1/2)
@@ -140,6 +154,11 @@ while cont == False:
 
                 if distance <= mem.size:
                     food.remove(f)
+                    mem.memberFood += 1
+                    mem.justEaten = 100
+                    mem.dying -= 100
+                    if mem.dying < 0:
+                        mem.dying = 0
                 elif distance <= mem.sense:
                     mem.foodInRange.append(f)
             
@@ -160,16 +179,27 @@ while cont == False:
                         if item not in mem.memoryBank:
                             mem.memoryBank.append(item)
 
-                
+
 
 
 
     pygame.draw.rect(gameDisplay, (255,255,255), (0, 0, display_width, display_height))
-    pygame.draw.rect(gameDisplay, (0,0,0), (949, 0, 2, display_height))
+                
+    for mem in species:
+        circleRectangle = pygame.Rect((mem.xPos, mem.yPos), (0, 0)).inflate((mem.sense * 2, mem.sense * 2))
+        circleSurface = pygame.Surface(circleRectangle.size, pygame.SRCALPHA)
+        pygame.draw.circle(circleSurface, (200,200,200,100), (mem.sense, mem.sense), mem.sense)
+        gameDisplay.blit(circleSurface, circleRectangle)
     for mem in species:
         pygame.draw.circle(gameDisplay, mem.color, (mem.xPos, mem.yPos), mem.size)
     for f in food:
         pygame.draw.circle(gameDisplay, f.color, f.position, f.size)
+
+    pygame.draw.rect(gameDisplay, (255,255,255), (949, 0, (display_width - 949), display_height))
+    pygame.draw.rect(gameDisplay, (0,0,0), (949, 0, 2, display_height))
+    
+    
+    
     if foodCounter == 60:
         makeFood()
         foodCounter = 0
