@@ -84,7 +84,7 @@ species = []
 def makeMember():
     memSize = 15
     memColor = (0,0,0)
-    memSpeed = 1
+    memSpeed = 5
     memStamina = 1
     memSense = 100
     memXPos = random.randrange(15,950 - 15)
@@ -131,16 +131,15 @@ while end == False:
                 pygame.quit()
                 pygame.font.quit()
                 quit()
-
-            if event.key == pygame.K_b:
+            if event.key == pygame.K_c:
                 introCounter = 599
     
     if 300 < introCounter < 555:
-        heading = TextBox("A Pop! Software Solution", 40, (600,400), (introCounter - 300,introCounter - 300,introCounter - 300), "c", "LemonMilk.otf")
+        heading = TextBox("A Poping! Software Solution", 40, (600,400), (introCounter - 300,introCounter - 300,introCounter - 300), "c", "LemonMilk.otf")
     elif introCounter >= 555:
-        heading = TextBox("A Pop! Software Solution", 40, (600,400), (255,255,255), "c", "LemonMilk.otf")
+        heading = TextBox("A Poping! Software Solution", 40, (600,400), (255,255,255), "c", "LemonMilk.otf")
     else:
-        heading = TextBox("A Pop! Software Solution", 40, (600,400), (0,0,0), "c", "LemonMilk.otf")
+        heading = TextBox("A Poping! Software Solution", 40, (600,400), (0,0,0), "c", "LemonMilk.otf")
 
     
     heading.display()
@@ -154,7 +153,7 @@ while end == False:
 cont = False
 mouseDown = False
 gameDisplay.fill((255,255,255))
-textBoxClear("Play", 300, (display_width / 2, display_height / 2), (0,0,0))
+textBoxClear("Enter", 300, (display_width / 2, display_height / 2), (0,0,0))
 while cont == False:
     clock.tick(60)
     for event in pygame.event.get():
@@ -167,12 +166,12 @@ while cont == False:
             quit()
         if 245 < mx < 967 and 277 < my < 529:
             gameDisplay.fill((255,255,255))
-            textBoxClear("Play", 320, (display_width / 2, display_height / 2), (0,0,0))
+            textBoxClear("Enter", 320, (display_width / 2, display_height / 2), (0,0,0))
             if event.type == pygame.MOUSEBUTTONDOWN or mouseDown == True:
                 onPlayButton = True
                 mouseDown = True
                 gameDisplay.fill((255,255,255))
-                textBoxClear("Play", 320, (display_width / 2, display_height / 2), (0,100,0))
+                textBoxClear("Enter", 320, (display_width / 2, display_height / 2), (0,100,0))
             if event.type == pygame.MOUSEBUTTONUP and mouseDown == True:
                 if onPlayButton == True:
                     cont = True
@@ -180,7 +179,7 @@ while cont == False:
                 gameDisplay.fill((255,255,255))
         else:
             gameDisplay.fill((255,255,255))
-            textBoxClear("Play", 300, (display_width / 2, display_height / 2), (0,0,0))
+            textBoxClear("Enter", 300, (display_width / 2, display_height / 2), (0,0,0))
         if event.type == pygame.MOUSEBUTTONUP and mouseDown == True:
             onPlayButton = False
             mouseDown = False
@@ -189,6 +188,9 @@ while cont == False:
 
 ## -------------------------------------- Main Menu --------------------------------------
 end = False
+speciesSurvival = False
+creative = False
+uVworld = False
 while end == False:
     clock.tick(60)
     mx, my = pygame.mouse.get_pos()
@@ -205,9 +207,18 @@ while end == False:
                 pygame.font.quit()
                 quit()
         if event.type == pygame.MOUSEBUTTONDOWN:
-            if 250 < mx < 350:
-                if 250 < my < 350:
+            if 150 < mx < 1090:
+                if 215 < my < 300:
                     end = True
+                    speciesSurvival = True
+            if 150 < mx < 1090:
+                if 365 < my < 445:
+                    end = True
+                    uVworld = True
+            if 150 < mx < 1090:
+                if 515 < my < 595:
+                    end = True
+                    creative = True
 
     pygame.draw.rect(gameDisplay, (255,255,255), (0, 0, display_width, display_height))
 
@@ -230,8 +241,41 @@ while end == False:
 
 
 
-## -------------------------------------- Basic Game --------------------------------------
-while cont == False:
+## -------------------------------------- Nameing --------------------------------------
+naming = True
+while naming == True:
+    clock.tick(60)
+    mx, my = pygame.mouse.get_pos()
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            pygame.font.quit()
+            quit()
+
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                cont = True
+                naming =true
+                pygame.quit()
+                pygame.font.quit()
+                quit()
+            if event.key == pygame.K_d:
+                naming = True
+                pygame.quit()
+                pygame.font.quit()
+                quit()
+
+    heading = TextBox("Name", 100, (50,100), (0,0,0), "l", "LemonMilk.otf")
+
+    pygame.draw.rect(gameDisplay, (255,255,255), (0, 0, display_width, display_height))
+
+    pygame.display.update()
+
+
+## -------------------------------------- Creative --------------------------------------
+cont = False
+while cont == False and creative == True:
     clock.tick(60)
     foodCounter += 1
     mx, my = pygame.mouse.get_pos()
@@ -242,19 +286,15 @@ while cont == False:
             pygame.quit()
             pygame.font.quit()
             quit()
+
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 cont = True
                 pygame.quit()
                 pygame.font.quit()
                 quit()
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            if 250 < mx < 350:
-                if 250 < my < 350:
-                    cont = True
 
     
-
 
     for mem in species:
 
@@ -274,6 +314,7 @@ while cont == False:
 
             for storedFoodItem in mem.memoryBank:
                 distanceFromItem = (((mem.xPos - storedFoodItem.xPos)**2) + ((mem.yPos - storedFoodItem.yPos)**2))**(1/2)
+
                 if distanceFromItem <= mem.sense:
                     if storedFoodItem not in food:
                         mem.memoryBank.remove(storedFoodItem)
@@ -296,13 +337,17 @@ while cont == False:
             if mem.foodInRange != []:
                 closest = mem.foodInRange[0]
                 closestDistance = (((mem.xPos - closest.xPos)**2) + ((mem.yPos - closest.yPos)**2))**(1/2)
+
                 for item in range(1, len(mem.foodInRange)):
                     itemDistance = (((mem.xPos - mem.foodInRange[item].xPos)**2) + ((mem.yPos - mem.foodInRange[item].yPos)**2))**(1/2)
                     if itemDistance < closestDistance:
                         closest = mem.foodInRange[item]   
-                        closestDistance = (((mem.xPos - closest.xPos)**2) + ((mem.yPos - closest.yPos)**2))**(1/2)         
-                mem.xPos += (closest.xPos - mem.xPos)/closestDistance
-                mem.yPos += (closest.yPos - mem.yPos)/closestDistance
+                        closestDistance = (((mem.xPos - closest.xPos)**2) + ((mem.yPos - closest.yPos)**2))**(1/2)  
+
+                mem.xPos += ((closest.xPos - mem.xPos)/closestDistance)*((mem.speed)**(1/2))
+                mem.yPos += ((closest.yPos - mem.yPos)/closestDistance)*((mem.speed)**(1/2))
+
+                mem.dying += mem.speed*0.01
             
             if mem.memory > 0:
                 for item in mem.foodInRange:
@@ -321,8 +366,10 @@ while cont == False:
         circleSurface = pygame.Surface(circleRectangle.size, pygame.SRCALPHA)
         pygame.draw.circle(circleSurface, (200,200,200,100), (mem.sense, mem.sense), mem.sense)
         gameDisplay.blit(circleSurface, circleRectangle)
+
     for mem in species:
         pygame.draw.circle(gameDisplay, mem.color, (mem.xPos, mem.yPos), mem.size)
+
     for f in food:
         pygame.draw.circle(gameDisplay, f.color, f.position, f.size)
 
