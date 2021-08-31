@@ -353,6 +353,11 @@ DNAslot2 = 'null'
 
 mosueButtonReleased = False
 
+downOnSense = False
+downOnSpeed = False
+downOnStamina = False
+downOnMemory = False
+
 while DNAing == True:
     clock.tick(60)
     mx, my = pygame.mouse.get_pos()
@@ -375,7 +380,6 @@ while DNAing == True:
                 pygame.font.quit()
                 quit()
         if event.type == pygame.MOUSEBUTTONDOWN:
-            print('HELLO!@#!#!@')
             mouseButtonIsDown = True
             downXpos = mx
             downYpos = my
@@ -383,7 +387,10 @@ while DNAing == True:
         if event.type == pygame.MOUSEBUTTONUP:
             mouseButtonIsDown = False
             mosueButtonReleased = True
-
+            downOnSense = False
+            downOnSpeed = False
+            downOnStamina = False
+            downOnMemory = False
     
 
     pygame.draw.rect(gameDisplay, (255,255,255), (0, 0, display_width, display_height))
@@ -407,10 +414,13 @@ while DNAing == True:
     if my in range(int(hexMemoryYpos), int(hexMemoryYpos) + 80):
         if mx in range(hexMemoryXpos, hexMemoryXpos + 80):
             if mouseButtonIsDown == False:
-                hoverTxt = TextBox("Memory: Increases species ability to remember food location", 11, (hexMemoryXpos + 40, 640), (0,0,125), "c", "LMLight.otf")
-            else:
-                hexMemoryXpos = hexMemoryXposOG - (downXpos - mx) 
-                hexMemoryYpos = hexMemoryYposOG - (downYpos - my) - wobbleHex
+                hoverTxt = TextBox("Memory: Increases species ability to remember food location", 11, (hexMemoryXpos + 40, hexMemoryYpos - 10), (0,0,125), "c", "LMLight.otf")
+            elif downOnSense == False and downOnSpeed == False and downOnStamina == False:
+                downOnMemory = True
+                if DNAslot1 == 'memory':
+                    DNAslot1 = 'null'
+                elif DNAslot2 == 'memory':
+                    DNAslot2 = 'null'
                 
             if mosueButtonReleased == True:
                 if mx in range(452, 452 + 80) and my in range(372, 372 +80) and DNAslot1 == 'null':
@@ -428,6 +438,13 @@ while DNAing == True:
                         DNAslot1 = 'null'
                     elif DNAslot2 == 'memory':
                         DNAslot2 = 'null'
+    if downOnMemory == True:
+        hexMemoryXpos = hexMemoryXposOG - (downXpos - mx) 
+        hexMemoryYpos = hexMemoryYposOG - (downYpos - my) - wobbleHex
+        if (hexMemoryYpos - my) > 80 or (hexMemoryYpos - my) < -80:
+            hexMemoryYpos = my - 40
+        if (hexMemoryXpos - mx) > 80 or (hexMemoryXpos - mx) < -80:
+            hexMemoryXpos = mx - 40
     hexMem = pygame.image.load('hexMemory.png')          
     if DNAslot1 == 'memory' or DNAslot2 == 'memory':
         gameDisplay.blit(hexMem, (hexMemoryXpos, hexMemoryYpos))
@@ -438,10 +455,13 @@ while DNAing == True:
     if my in range(int(hexSpeedYpos), int(hexSpeedYpos) + 80):
         if mx in range(hexSpeedXpos, hexSpeedXpos + 80):
             if mouseButtonIsDown == False:
-                hoverTxt = TextBox("Speed: Increases speed of species", 11, (hexSpeedXpos + 40, 640), (0,0,125), "c", "LMLight.otf")
-            else:
-                hexSpeedXpos = hexSpeedXposOG - (downXpos - mx) 
-                hexSpeedYpos = hexSpeedYposOG - (downYpos - my) - wobbleHex
+                hoverTxt = TextBox("Speed: Increases speed of species", 11, (hexSpeedXpos + 40, hexSpeedYpos - 10), (0,0,125), "c", "LMLight.otf")
+            elif downOnSense == False and downOnMemory == False and downOnStamina == False:
+                downOnSpeed = True
+                if DNAslot1 == 'speed':
+                    DNAslot1 = 'null'
+                elif DNAslot2 == 'speed':
+                    DNAslot2 = 'null'
                 
             if mosueButtonReleased == True:
                 if mx in range(452, 452 + 80) and my in range(372, 372 +80) and DNAslot1 == 'null':
@@ -459,6 +479,13 @@ while DNAing == True:
                         DNAslot1 = 'null'
                     elif DNAslot2 == 'speed':
                         DNAslot2 = 'null'
+    if downOnSpeed == True:
+        hexSpeedXpos = hexSpeedXposOG - (downXpos - mx) 
+        hexSpeedYpos = hexSpeedYposOG - (downYpos - my) - wobbleHex
+        if (hexSpeedYpos - my) > 80 or (hexSpeedYpos - my) < -80:
+            hexSpeedYpos = my - 40
+        if (hexSpeedXpos - mx) > 80 or (hexSpeedXpos - mx) < -80:
+            hexSpeedXpos = mx - 40
     hexSpe = pygame.image.load('hexSpeed.png')
     if DNAslot1 == 'speed' or DNAslot2 == 'speed':
         gameDisplay.blit(hexSpe, (hexSpeedXpos, hexSpeedYpos))
@@ -470,10 +497,13 @@ while DNAing == True:
     if my in range(int(hexStaminaYpos), int(hexStaminaYpos) + 80):
         if mx in range(hexStaminaXpos, hexStaminaXpos + 80):
             if mouseButtonIsDown == False:
-                hoverTxt = TextBox("Stamina: Increases species total health allowing for longer without food", 11, (hexStaminaXpos + 40, 640), (0,0,125), "c", "LMLight.otf")
-            else:
-                hexStaminaXpos = hexStaminaXposOG - (downXpos - mx) 
-                hexStaminaYpos = hexStaminaYposOG - (downYpos - my) - wobbleHex
+                hoverTxt = TextBox("Stamina: Increases species total health allowing for longer without food", 11, (hexStaminaXpos + 40, hexStaminaYpos - 10), (0,0,125), "c", "LMLight.otf")
+            elif downOnSense == False and downOnSpeed == False and downOnMemory == False:
+                downOnStamina = True
+                if DNAslot1 == 'stamina':
+                    DNAslot1 = 'null'
+                elif DNAslot2 == 'stamina':
+                    DNAslot2 = 'null'
                 
             if mosueButtonReleased == True:
                 if mx in range(452, 452 + 80) and my in range(372, 372 +80) and DNAslot1 == 'null':
@@ -491,6 +521,13 @@ while DNAing == True:
                         DNAslot1 = 'null'
                     elif DNAslot2 == 'stamina':
                         DNAslot2 = 'null'
+    if downOnStamina == True:
+        hexStaminaXpos = hexStaminaXposOG - (downXpos - mx) 
+        hexStaminaYpos = hexStaminaYposOG - (downYpos - my) - wobbleHex
+        if (hexStaminaYpos - my) > 80 or (hexStaminaYpos - my) < -80:
+            hexStaminaYpos = my - 40
+        if (hexStaminaXpos - mx) > 80 or (hexStaminaXpos - mx) < -80:
+            hexStaminaXpos = mx - 40
     hexSta = pygame.image.load('hexStamina.png')
     if DNAslot1 == 'stamina' or DNAslot2 == 'stamina':
         gameDisplay.blit(hexSta, (hexStaminaXpos, hexStaminaYpos))
@@ -502,10 +539,13 @@ while DNAing == True:
     if my in range(int(hexSenseYpos), int(hexSenseYpos) + 80):
         if mx in range(hexSenseXpos, hexSenseXpos + 80):
             if mouseButtonIsDown == False:
-                hoverTxt = TextBox("Sense: Increases species ability to sense food from a further distance", 11, (hexSenseXpos + 40, 640), (0,0,125), "c", "LMLight.otf")
-            else:
-                hexSenseXpos = hexSenseXposOG - (downXpos - mx) 
-                hexSenseYpos = hexSenseYposOG - (downYpos - my) - wobbleHex
+                hoverTxt = TextBox("Sense: Increases species ability to sense food from a further distance", 11, (hexSenseXpos + 40, hexSenseYpos - 10), (0,0,125), "c", "LMLight.otf")
+            elif downOnMemory == False and downOnSpeed == False and downOnStamina == False:
+                downOnSense = True
+                if DNAslot1 == 'sense':
+                    DNAslot1 = 'null'
+                elif DNAslot2 == 'sense':
+                    DNAslot2 = 'null'
                 
             if mosueButtonReleased == True:
                 if mx in range(452, 452 + 80) and my in range(372, 372 +80) and DNAslot1 == 'null':
@@ -523,8 +563,15 @@ while DNAing == True:
                         DNAslot1 = 'null'
                     elif DNAslot2 == 'sense':
                         DNAslot2 = 'null'
+    if downOnSense == True:
+        hexSenseXpos = hexSenseXposOG - (downXpos - mx) 
+        hexSenseYpos = hexSenseYposOG - (downYpos - my) - wobbleHex
+        if (hexSenseYpos - my) > 80 or (hexSenseYpos - my) < -80:
+            hexSenseYpos = my - 40
+        if (hexSenseXpos - mx) > 80 or (hexSenseXpos - mx) < -80:
+            hexSenseXpos = mx - 40
     hexSen = pygame.image.load('hexSense.png')
-    if DNAslot1 == 'stamina' or DNAslot2 == 'stamina':
+    if DNAslot1 == 'sense' or DNAslot2 == 'sense':
         gameDisplay.blit(hexSen, (hexSenseXpos, hexSenseYpos))
     else:
         gameDisplay.blit(hexSen, (hexSenseXpos, hexSenseYpos + wobbleHex))
