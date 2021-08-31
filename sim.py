@@ -53,6 +53,13 @@ class TextBox:
         gameDisplay.blit(text, textRect)
         self.rect = textRect
 
+# class HexImage:
+#     def __init__(self, xPos, yPos, imageSrc):
+#         self.xPos = xPos
+#         self.yPos = yPos
+#         self.image = pygame.image.load(iself.mageSrc)
+#         gameDisplay.blit(self.image, (self.xPos, self.yPos + wobbleHex))
+
 food = []
 class FoodPiece:
     def __init__(self, size, xPos, yPos, color):
@@ -85,7 +92,7 @@ def makeMember():
     memSize = 15
     memColor = (0,0,0)
     memSpeed = 5
-    memStamina = 1
+    memStamina = 150
     memSense = 100
     memXPos = random.randrange(15,950 - 15)
     memYPos = random.randrange(15,display_height - 15)
@@ -243,9 +250,17 @@ while end == False:
 
 ## -------------------------------------- Nameing --------------------------------------
 naming = True
+name = ""
+flasher = 0
+limitReacher = 1000
+
+charsAllowed = [45, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122]
+
 while naming == True:
     clock.tick(60)
     mx, my = pygame.mouse.get_pos()
+    flasher += 1
+    limitReacher += 1
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -256,19 +271,263 @@ while naming == True:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 cont = True
-                naming =true
+                naming = False
                 pygame.quit()
                 pygame.font.quit()
                 quit()
-            if event.key == pygame.K_d:
-                naming = True
-                pygame.quit()
-                pygame.font.quit()
-                quit()
+            if event.key == 13: ## 13 is return
+                if len(name) > 1:
+                    naming = False
 
-    heading = TextBox("Name", 100, (50,100), (0,0,0), "l", "LemonMilk.otf")
+            if event.key in charsAllowed:
+                if len(name) < 12:
+                    name = name + chr(event.key)
+                else:
+                    limitReacher = 0
+
+            if event.key == pygame.K_BACKSPACE:
+                    name = name[:-1]
+
 
     pygame.draw.rect(gameDisplay, (255,255,255), (0, 0, display_width, display_height))
+
+    heading = TextBox("Species Information", 100, (50,100), (0,0,0), "l", "LemonMilk.otf")
+
+    nameHeading = TextBox("Name: ", 75, (50,225), (0,0,0), "l", "LemonMilk.otf")
+
+    if flasher > 40 or len(name) > 11:
+        nameDisplayer = TextBox(name, 75, (315,225), (0,0,0), "l", "LMLight.otf")
+    else:
+        nameDisplayer = TextBox(name + "|", 75, (315,225), (0,0,0), "l", "LMLight.otf")
+
+    if flasher > 80:
+        flasher = 0
+
+    if limitReacher < 100:
+        messageDisplayer = TextBox("Name length limit reached", 20, (50,180), (125,0,0), "l", "LMLight.otf")
+    elif len(name) > 1:
+        messageDisplayer = TextBox("Press Enter to sumbit name", 20, (50,180), (0,125,0), "l", "LMLight.otf")
+
+    if len(name) < 12:
+        limitReacher = 1000
+
+    pygame.display.update()
+
+
+## -------------------------------------- DNA Config --------------------------------------
+DNAing = True
+
+mouseButtonIsDown = False
+
+charsAllowed = [45, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122]
+
+wobbleHexVar = 0
+wobbleHex = math.sin(wobbleHexVar) * 5
+
+
+hexMemoryXpos = 240
+hexSpeedXpos = 453
+hexStaminaXpos = 666
+hexSenseXpos = 880
+
+hexMemoryYpos = 650
+hexSpeedYpos = 650
+hexStaminaYpos = 650
+hexSenseYpos = 650
+
+hexMemoryXposOG = 240
+hexSpeedXposOG = 453
+hexStaminaXposOG = 666
+hexSenseXposOG = 880
+
+hexMemoryYposOG = 650
+hexSpeedYposOG = 650
+hexStaminaYposOG = 650
+hexSenseYposOG = 650
+
+downXpos = 0
+downYpos = 0
+
+DNAslot1 = 'null'
+DNAslot2 = 'null'
+
+mosueButtonReleased = False
+
+while DNAing == True:
+    clock.tick(60)
+    mx, my = pygame.mouse.get_pos()
+    mosueButtonReleased = False
+
+    wobbleHexVar += 0.1
+    wobbleHex = math.sin(wobbleHexVar) * 5
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            pygame.font.quit()
+            quit()
+
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                cont = True
+                naming = False
+                pygame.quit()
+                pygame.font.quit()
+                quit()
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            print('HELLO!@#!#!@')
+            mouseButtonIsDown = True
+            downXpos = mx
+            downYpos = my
+
+        if event.type == pygame.MOUSEBUTTONUP:
+            mouseButtonIsDown = False
+            mosueButtonReleased = True
+
+    
+
+    pygame.draw.rect(gameDisplay, (255,255,255), (0, 0, display_width, display_height))
+
+    heading = TextBox("Species Information", 100, (50,100), (0,0,0), "l", "LemonMilk.otf")
+
+    nameHeading = TextBox("Name: ", 75, (50,225), (0,0,0), "l", "LemonMilk.otf")
+    nameDisplayer = TextBox(name, 75, (315,225), (0,0,0), "l", "LMLight.otf")
+
+    dnaImg = pygame.image.load('dna.png')
+    gameDisplay.blit(dnaImg, (200, 400))
+
+    hexImg1 = pygame.image.load('hex.png')
+    gameDisplay.blit(hexImg1, (452, 372))
+
+    hexImg2 = pygame.image.load('hex.png')
+    gameDisplay.blit(hexImg2, (674, 372))
+
+
+
+    if my in range(int(hexMemoryYpos), int(hexMemoryYpos) + 80):
+        if mx in range(hexMemoryXpos, hexMemoryXpos + 80):
+            if mouseButtonIsDown == False:
+                hoverTxt = TextBox("Memory: Increases species ability to remember food location", 11, (hexMemoryXpos + 40, 640), (0,0,125), "c", "LMLight.otf")
+            else:
+                hexMemoryXpos = hexMemoryXposOG - (downXpos - mx) 
+                hexMemoryYpos = hexMemoryYposOG - (downYpos - my) - wobbleHex
+                
+            if mosueButtonReleased == True:
+                if mx in range(452, 452 + 80) and my in range(372, 372 +80) and DNAslot1 == 'null':
+                    hexMemoryXpos = 452
+                    hexMemoryYpos = 372
+                    DNAslot1 = 'memory'
+                elif mx in range(674, 674 + 80) and my in range(372, 372 +80) and DNAslot2 == 'null':
+                    hexMemoryXpos = 674
+                    hexMemoryYpos = 372
+                    DNAslot2 = 'memory'
+                else:
+                    hexMemoryXpos = hexMemoryXposOG
+                    hexMemoryYpos = hexMemoryYposOG
+                    if DNAslot1 == 'memory':
+                        DNAslot1 = 'null'
+                    elif DNAslot2 == 'memory':
+                        DNAslot2 = 'null'
+    hexMem = pygame.image.load('hexMemory.png')          
+    if DNAslot1 == 'memory' or DNAslot2 == 'memory':
+        gameDisplay.blit(hexMem, (hexMemoryXpos, hexMemoryYpos))
+    else:
+        gameDisplay.blit(hexMem, (hexMemoryXpos, hexMemoryYpos + wobbleHex))
+
+
+    if my in range(int(hexSpeedYpos), int(hexSpeedYpos) + 80):
+        if mx in range(hexSpeedXpos, hexSpeedXpos + 80):
+            if mouseButtonIsDown == False:
+                hoverTxt = TextBox("Speed: Increases speed of species", 11, (hexSpeedXpos + 40, 640), (0,0,125), "c", "LMLight.otf")
+            else:
+                hexSpeedXpos = hexSpeedXposOG - (downXpos - mx) 
+                hexSpeedYpos = hexSpeedYposOG - (downYpos - my) - wobbleHex
+                
+            if mosueButtonReleased == True:
+                if mx in range(452, 452 + 80) and my in range(372, 372 +80) and DNAslot1 == 'null':
+                    hexSpeedXpos = 452
+                    hexSpeedYpos = 372
+                    DNAslot1 = 'speed'
+                elif mx in range(674, 674 + 80) and my in range(372, 372 +80) and DNAslot2 == 'null':
+                    hexSpeedXpos = 674
+                    hexSpeedYpos = 372
+                    DNAslot2 = 'speed'
+                else:
+                    hexSpeedXpos = hexSpeedXposOG
+                    hexSpeedYpos = hexSpeedYposOG
+                    if DNAslot1 == 'speed':
+                        DNAslot1 = 'null'
+                    elif DNAslot2 == 'speed':
+                        DNAslot2 = 'null'
+    hexSpe = pygame.image.load('hexSpeed.png')
+    if DNAslot1 == 'speed' or DNAslot2 == 'speed':
+        gameDisplay.blit(hexSpe, (hexSpeedXpos, hexSpeedYpos))
+    else:
+        gameDisplay.blit(hexSpe, (hexSpeedXpos, hexSpeedYpos + wobbleHex))
+    
+
+
+    if my in range(int(hexStaminaYpos), int(hexStaminaYpos) + 80):
+        if mx in range(hexStaminaXpos, hexStaminaXpos + 80):
+            if mouseButtonIsDown == False:
+                hoverTxt = TextBox("Stamina: Increases species total health allowing for longer without food", 11, (hexStaminaXpos + 40, 640), (0,0,125), "c", "LMLight.otf")
+            else:
+                hexStaminaXpos = hexStaminaXposOG - (downXpos - mx) 
+                hexStaminaYpos = hexStaminaYposOG - (downYpos - my) - wobbleHex
+                
+            if mosueButtonReleased == True:
+                if mx in range(452, 452 + 80) and my in range(372, 372 +80) and DNAslot1 == 'null':
+                    hexStaminaXpos = 452
+                    hexStaminaYpos = 372
+                    DNAslot1 = 'stamina'
+                elif mx in range(674, 674 + 80) and my in range(372, 372 +80) and DNAslot2 == 'null':
+                    hexStaminaXpos = 674
+                    hexStaminaYpos = 372
+                    DNAslot2 = 'stamina'
+                else:
+                    hexStaminaXpos = hexStaminaXposOG
+                    hexStaminaYpos = hexStaminaYposOG
+                    if DNAslot1 == 'stamina':
+                        DNAslot1 = 'null'
+                    elif DNAslot2 == 'stamina':
+                        DNAslot2 = 'null'
+    hexSta = pygame.image.load('hexStamina.png')
+    if DNAslot1 == 'stamina' or DNAslot2 == 'stamina':
+        gameDisplay.blit(hexSta, (hexStaminaXpos, hexStaminaYpos))
+    else:
+        gameDisplay.blit(hexSta, (hexStaminaXpos, hexStaminaYpos + wobbleHex))
+    
+            
+
+    if my in range(int(hexSenseYpos), int(hexSenseYpos) + 80):
+        if mx in range(hexSenseXpos, hexSenseXpos + 80):
+            if mouseButtonIsDown == False:
+                hoverTxt = TextBox("Sense: Increases species ability to sense food from a further distance", 11, (hexSenseXpos + 40, 640), (0,0,125), "c", "LMLight.otf")
+            else:
+                hexSenseXpos = hexSenseXposOG - (downXpos - mx) 
+                hexSenseYpos = hexSenseYposOG - (downYpos - my) - wobbleHex
+                
+            if mosueButtonReleased == True:
+                if mx in range(452, 452 + 80) and my in range(372, 372 +80) and DNAslot1 == 'null':
+                    hexSenseXpos = 452
+                    hexSenseYpos = 372
+                    DNAslot1 = 'sense'
+                elif mx in range(674, 674 + 80) and my in range(372, 372 +80) and DNAslot2 == 'null':
+                    hexSenseXpos = 674
+                    hexSenseYpos = 372
+                    DNAslot2 = 'sense'
+                else:
+                    hexSenseXpos = hexSenseXposOG
+                    hexSenseYpos = hexSenseYposOG
+                    if DNAslot1 == 'sense':
+                        DNAslot1 = 'null'
+                    elif DNAslot2 == 'sense':
+                        DNAslot2 = 'null'
+    hexSen = pygame.image.load('hexSense.png')
+    if DNAslot1 == 'stamina' or DNAslot2 == 'stamina':
+        gameDisplay.blit(hexSen, (hexSenseXpos, hexSenseYpos))
+    else:
+        gameDisplay.blit(hexSen, (hexSenseXpos, hexSenseYpos + wobbleHex))
 
     pygame.display.update()
 
@@ -303,7 +562,7 @@ while cont == False and creative == True:
         mem.foodInRange = []
         mem.dying += 0.05
 
-        if mem.dying > 150:
+        if mem.dying > stamina:
             species.remove(mem)
 
         else:
