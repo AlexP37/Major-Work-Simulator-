@@ -88,15 +88,15 @@ class Member():
         self.dying = 0
 
 species = []
-def makeMember():
+def makeMember(speedIt, staminaIt, senseIt, memoryIt):
     memSize = 15
     memColor = (0,0,0)
-    memSpeed = 5
-    memStamina = 150
-    memSense = 100
+    memSpeed = speedIt
+    memStamina = staminaIt
+    memSense = senseIt
     memXPos = random.randrange(15,950 - 15)
     memYPos = random.randrange(15,display_height - 15)
-    memMemory = 50
+    memMemory = memoryIt
     memIntelligence = 1
 
     species.append(Member(memSize, memColor, memSpeed, memStamina, memXPos, memYPos, memSense, memMemory, memIntelligence))
@@ -108,9 +108,6 @@ def makeFood():
     foodYPos = random.randrange(15,display_height - 15)
 
     food.append(FoodPiece(foodSize, foodXPos, foodYPos, foodColor))
-
-for i in range(1,10):
-    makeMember()
 
 foodCounter = 0
 
@@ -160,7 +157,7 @@ while end == False:
 cont = False
 mouseDown = False
 gameDisplay.fill((255,255,255))
-textBoxClear("Enter", 300, (display_width / 2, display_height / 2), (0,0,0))
+textBoxClear("Begin", 300, (display_width / 2, display_height / 2), (0,0,0))
 while cont == False:
     clock.tick(60)
     for event in pygame.event.get():
@@ -173,12 +170,12 @@ while cont == False:
             quit()
         if 245 < mx < 967 and 277 < my < 529:
             gameDisplay.fill((255,255,255))
-            textBoxClear("Enter", 320, (display_width / 2, display_height / 2), (0,0,0))
+            textBoxClear("Begin", 320, (display_width / 2, display_height / 2), (0,0,0))
             if event.type == pygame.MOUSEBUTTONDOWN or mouseDown == True:
                 onPlayButton = True
                 mouseDown = True
                 gameDisplay.fill((255,255,255))
-                textBoxClear("Enter", 320, (display_width / 2, display_height / 2), (0,100,0))
+                textBoxClear("Begin", 320, (display_width / 2, display_height / 2), (0,100,0))
             if event.type == pygame.MOUSEBUTTONUP and mouseDown == True:
                 if onPlayButton == True:
                     cont = True
@@ -186,7 +183,7 @@ while cont == False:
                 gameDisplay.fill((255,255,255))
         else:
             gameDisplay.fill((255,255,255))
-            textBoxClear("Enter", 300, (display_width / 2, display_height / 2), (0,0,0))
+            textBoxClear("Begin", 300, (display_width / 2, display_height / 2), (0,0,0))
         if event.type == pygame.MOUSEBUTTONUP and mouseDown == True:
             onPlayButton = False
             mouseDown = False
@@ -214,15 +211,15 @@ while end == False:
                 pygame.font.quit()
                 quit()
         if event.type == pygame.MOUSEBUTTONDOWN:
-            if 150 < mx < 1090:
+            if 150 < mx < 1170:
                 if 215 < my < 300:
                     end = True
                     speciesSurvival = True
-            if 150 < mx < 1090:
+            if 150 < mx < 1170:
                 if 365 < my < 445:
                     end = True
                     uVworld = True
-            if 150 < mx < 1090:
+            if 150 < mx < 1170:
                 if 515 < my < 595:
                     end = True
                     creative = True
@@ -233,15 +230,15 @@ while end == False:
     heading.display()
 
 
-    title1 = TextBox("Species Survival", 100, (150,250), (50,50,50), "l", "LMLight.otf")
+    title1 = TextBox("- Species Survival", 100, (150,250), (50,50,50), "l", "LMLight.otf")
     title1.display()
 
 
-    title2 = TextBox("U vs The World", 100, (150,400), (50,50,50), "l", "LMLight.otf")
+    title2 = TextBox("- U vs The World", 100, (150,400), (50,50,50), "l", "LMLight.otf")
     title2.display()
 
 
-    title3 = TextBox("Creative Mode", 100, (150,550), (50,50,50), "l", "LMLight.otf")
+    title3 = TextBox("- Creative Mode", 100, (150,550), (50,50,50), "l", "LMLight.otf")
     title3.display()
 
     pygame.display.update()
@@ -249,70 +246,74 @@ while end == False:
 
 
 ## -------------------------------------- Nameing --------------------------------------
-naming = True
-name = ""
-flasher = 0
-limitReacher = 1000
+def namer():
+    global naming
+    naming = True
+    global name
+    name = ""
+    flasher = 0
+    limitReacher = 1000
 
-charsAllowed = [45, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122]
+    charsAllowed = [45, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122]
 
-while naming == True:
-    clock.tick(60)
-    mx, my = pygame.mouse.get_pos()
-    flasher += 1
-    limitReacher += 1
+    while naming == True:
+        clock.tick(60)
+        mx, my = pygame.mouse.get_pos()
+        flasher += 1
+        limitReacher += 1
 
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            pygame.font.quit()
-            quit()
-
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_ESCAPE:
-                cont = True
-                naming = False
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
                 pygame.quit()
                 pygame.font.quit()
                 quit()
-            if event.key == 13: ## 13 is return
-                if len(name) > 1:
+
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    cont = True
                     naming = False
+                    pygame.quit()
+                    pygame.font.quit()
+                    quit()
+                if event.key == 13: ## 13 is return
+                    if len(name) > 1:
+                        naming = False
 
-            if event.key in charsAllowed:
-                if len(name) < 12:
-                    name = name + chr(event.key)
-                else:
-                    limitReacher = 0
+                if event.key in charsAllowed:
+                    if len(name) < 12:
+                        name = name + chr(event.key)
+                    else:
+                        limitReacher = 0
 
-            if event.key == pygame.K_BACKSPACE:
-                    name = name[:-1]
+                if event.key == pygame.K_BACKSPACE:
+                        name = name[:-1]
 
 
-    pygame.draw.rect(gameDisplay, (255,255,255), (0, 0, display_width, display_height))
+        pygame.draw.rect(gameDisplay, (255,255,255), (0, 0, display_width, display_height))
 
-    heading = TextBox("Species Information", 100, (50,100), (0,0,0), "l", "LemonMilk.otf")
+        heading = TextBox("Species Information", 100, (50,100), (0,0,0), "l", "LemonMilk.otf")
 
-    nameHeading = TextBox("Name: ", 75, (50,225), (0,0,0), "l", "LemonMilk.otf")
+        nameHeading = TextBox("Name: ", 75, (50,225), (0,0,0), "l", "LemonMilk.otf")
 
-    if flasher > 40 or len(name) > 11:
-        nameDisplayer = TextBox(name, 75, (315,225), (0,0,0), "l", "LMLight.otf")
-    else:
-        nameDisplayer = TextBox(name + "|", 75, (315,225), (0,0,0), "l", "LMLight.otf")
+        if flasher > 40 or len(name) > 11:
+            nameDisplayer = TextBox(name, 75, (315,225), (0,0,0), "l", "LMLight.otf")
+        else:
+            nameDisplayer = TextBox(name + "|", 75, (315,225), (0,0,0), "l", "LMLight.otf")
 
-    if flasher > 80:
-        flasher = 0
+        if flasher > 80:
+            flasher = 0
 
-    if limitReacher < 100:
-        messageDisplayer = TextBox("Name length limit reached", 20, (50,180), (125,0,0), "l", "LMLight.otf")
-    elif len(name) > 1:
-        messageDisplayer = TextBox("Press Enter to sumbit name", 20, (50,180), (0,125,0), "l", "LMLight.otf")
+        if limitReacher < 100:
+            messageDisplayer = TextBox("Name length limit reached", 20, (50,180), (125,0,0), "l", "LMLight.otf")
+        elif len(name) > 1:
+            messageDisplayer = TextBox("Press Enter to sumbit name", 20, (50,180), (0,125,0), "l", "LMLight.otf")
 
-    if len(name) < 12:
-        limitReacher = 1000
+        if len(name) < 12:
+            limitReacher = 1000
 
-    pygame.display.update()
+        pygame.display.update()
 
+namer()
 
 ## -------------------------------------- DNA Config --------------------------------------
 DNAing = True
@@ -366,6 +367,22 @@ while DNAing == True:
     wobbleHexVar += 0.1
     wobbleHex = math.sin(wobbleHexVar) * 5
 
+    pygame.draw.rect(gameDisplay, (255,255,255), (0, 0, display_width, display_height))
+
+    heading = TextBox("Species Information", 100, (50,100), (0,0,0), "l", "LemonMilk.otf")
+
+    nameHeading = TextBox("Name: ", 75, (50,225), (0,0,0), "l", "LemonMilk.otf")
+    nameDisplayer = TextBox(name, 75, (315,225), (0,0,0), "l", "LMLight.otf")
+
+    dnaImg = pygame.image.load('dna.png')
+    gameDisplay.blit(dnaImg, (200, 400))
+
+    hexImg1 = pygame.image.load('hex.png')
+    gameDisplay.blit(hexImg1, (452, 372))
+
+    hexImg2 = pygame.image.load('hex.png')
+    gameDisplay.blit(hexImg2, (674, 372))
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
@@ -391,24 +408,49 @@ while DNAing == True:
             downOnSpeed = False
             downOnStamina = False
             downOnMemory = False
-    
 
-    pygame.draw.rect(gameDisplay, (255,255,255), (0, 0, display_width, display_height))
+    tick = pygame.image.load('tick.png')
+    gameDisplay.blit(tick, (1025, 441))
+    if mx in range(1025,1150) and my in range(441,566):
+        if downXpos == mx and downYpos == my:
+            DNAing = False
 
-    heading = TextBox("Species Information", 100, (50,100), (0,0,0), "l", "LemonMilk.otf")
+    arrow = pygame.image.load('arrow.png')
+    gameDisplay.blit(arrow, (50, 441))
+    if mx in range(50,175) and my in range(441,566):
+        if downXpos == mx and downYpos == my:
+            namer()
 
-    nameHeading = TextBox("Name: ", 75, (50,225), (0,0,0), "l", "LemonMilk.otf")
-    nameDisplayer = TextBox(name, 75, (315,225), (0,0,0), "l", "LMLight.otf")
-
-    dnaImg = pygame.image.load('dna.png')
-    gameDisplay.blit(dnaImg, (200, 400))
-
-    hexImg1 = pygame.image.load('hex.png')
-    gameDisplay.blit(hexImg1, (452, 372))
-
-    hexImg2 = pygame.image.load('hex.png')
-    gameDisplay.blit(hexImg2, (674, 372))
-
+            DNAing = True
+            mouseButtonIsDown = False
+            charsAllowed = [45, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 12]
+            wobbleHexVar = 0
+            wobbleHex = math.sin(wobbleHexVar) * 5
+            hexMemoryXpos = 240
+            hexSpeedXpos = 453
+            hexStaminaXpos = 666
+            hexSenseXpos = 880
+            hexMemoryYpos = 650
+            hexSpeedYpos = 650
+            hexStaminaYpos = 650
+            hexSenseYpos = 650
+            hexMemoryXposOG = 240
+            hexSpeedXposOG = 453
+            hexStaminaXposOG = 666
+            hexSenseXposOG = 880
+            hexMemoryYposOG = 650
+            hexSpeedYposOG = 650
+            hexStaminaYposOG = 650
+            hexSenseYposOG = 650
+            downXpos = 0
+            downYpos = 0
+            DNAslot1 = 'null'
+            DNAslot2 = 'null'
+            mosueButtonReleased = False
+            downOnSense = False
+            downOnSpeed = False
+            downOnStamina = False
+            downOnMemory = False
 
 
     if my in range(int(hexMemoryYpos), int(hexMemoryYpos) + 80):
@@ -579,119 +621,421 @@ while DNAing == True:
     pygame.display.update()
 
 
-## -------------------------------------- Creative --------------------------------------
+
+## -------------------------------------- Initialising --------------------------------------
 cont = False
-while cont == False and creative == True:
-    clock.tick(60)
-    foodCounter += 1
-    mx, my = pygame.mouse.get_pos()
+foodItemPoints = 0
+
+## -------------------------------------- Creative --------------------------------------
+if creative == True:
+
+    speciesSpeed = 1
+    speciesStamina = 150
+    speciesSense = 100
+    speciesMemory = 1
+
+    if DNAslot1 == 'speed' or DNAslot2 == 'speed':
+        speciesSpeed = 3
+    if DNAslot1 == 'stamina' or DNAslot2 == 'stamina':
+        speciesStamina = 250
+    if DNAslot1 == 'sense' or DNAslot2 == 'sense':
+        speciesSense = 125
+    if DNAslot1 == 'memory' or DNAslot2 == 'memory':
+        speciesMemory = 5
+
+    for i in range(1,10):
+        makeMember(speciesSpeed, speciesStamina, speciesSense, speciesMemory)
+        
+    while cont == False:
+        clock.tick(60)
+        foodCounter += 1
+        foodItemPoints = 1000
+        mx, my = pygame.mouse.get_pos()
 
 
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            pygame.font.quit()
-            quit()
-
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_ESCAPE:
-                cont = True
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
                 pygame.quit()
                 pygame.font.quit()
                 quit()
 
-    
-
-    for mem in species:
-
-        # if mem.intelligence == 1:
-
-        mem.foodInRange = []
-        mem.dying += 0.05
-
-        if mem.dying > stamina:
-            species.remove(mem)
-
-        else:
-            if mem.justEaten != 0:
-                mem.justEaten -= 5
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    cont = True
+                    pygame.quit()
+                    pygame.font.quit()
+                    quit()
             
-            mem.color = (0 + mem.dying, 0 + mem.dying + mem.justEaten, 0 + mem.dying)
-
-            for storedFoodItem in mem.memoryBank:
-                distanceFromItem = (((mem.xPos - storedFoodItem.xPos)**2) + ((mem.yPos - storedFoodItem.yPos)**2))**(1/2)
-
-                if distanceFromItem <= mem.sense:
-                    if storedFoodItem not in food:
-                        mem.memoryBank.remove(storedFoodItem)
-                else:
-                    mem.foodInRange.append(storedFoodItem)
-
-            for f in food:
-                distance = (((mem.xPos - f.xPos)**2) + ((mem.yPos - f.yPos)**2))**(1/2)
-
-                if distance <= mem.size:
-                    food.remove(f)
-                    mem.memberFood += 1
-                    mem.justEaten = 100
-                    mem.dying -= 100
-                    if mem.dying < 0:
-                        mem.dying = 0
-                elif distance <= mem.sense:
-                    mem.foodInRange.append(f)
-            
-            if mem.foodInRange != []:
-                closest = mem.foodInRange[0]
-                closestDistance = (((mem.xPos - closest.xPos)**2) + ((mem.yPos - closest.yPos)**2))**(1/2)
-
-                for item in range(1, len(mem.foodInRange)):
-                    itemDistance = (((mem.xPos - mem.foodInRange[item].xPos)**2) + ((mem.yPos - mem.foodInRange[item].yPos)**2))**(1/2)
-                    if itemDistance < closestDistance:
-                        closest = mem.foodInRange[item]   
-                        closestDistance = (((mem.xPos - closest.xPos)**2) + ((mem.yPos - closest.yPos)**2))**(1/2)  
-
-                mem.xPos += ((closest.xPos - mem.xPos)/closestDistance)*((mem.speed)**(1/2))
-                mem.yPos += ((closest.yPos - mem.yPos)/closestDistance)*((mem.speed)**(1/2))
-
-                mem.dying += mem.speed*0.01
-            
-            if mem.memory > 0:
-                for item in mem.foodInRange:
-                    if len(mem.memoryBank) < mem.memory:
-                        if item not in mem.memoryBank:
-                            mem.memoryBank.append(item)
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if mx in range(965,1005) and my in range(165,205):
+                    if speciesSpeed > 1:
+                        speciesSpeed -= 0.5
+                        foodItemPoints += 1
+                if mx in range(965 + 175,1005 + 175) and my in range(165,205):
+                    if foodItemPoints > 0:
+                        speciesSpeed += 0.5
+                        foodItemPoints -= 1
 
 
+                if mx in range(965,1005) and my in range(265,305):
+                    if speciesStamina > 1:
+                        speciesStamina -= 1
+                        foodItemPoints += 1
+                if mx in range(965 + 175,1005 + 175) and my in range(265,305):
+                    if foodItemPoints > 0:
+                        speciesStamina += 1
+                        foodItemPoints -= 1
 
 
+                if mx in range(965,1005) and my in range(365,405):
+                    if speciesSense > 1:
+                        speciesSense -= 1
+                        foodItemPoints += 1
+                if mx in range(965 + 175,1005 + 175) and my in range(365,405):
+                    if foodItemPoints > 0:
+                        speciesSense += 1
+                        foodItemPoints -= 1
 
-    pygame.draw.rect(gameDisplay, (255,255,255), (0, 0, display_width, display_height))
+
+                if mx in range(965,1005) and my in range(465,505):
+                    if speciesMemory > 1:
+                        speciesMemory -= 1
+                        foodItemPoints += 1
+                if mx in range(965 + 175,1005 + 175) and my in range(465,505):
+                    if foodItemPoints > 0:
+                        speciesMemory += 1
+                        foodItemPoints -= 1
+
+        
+
+        for mem in species:
+
+            mem.speed = speciesSpeed
+            mem.sense = speciesSense
+            mem.stamina = speciesStamina
+            mem.memory = speciesMemory
+
+            # if mem.intelligence == 1:
+
+            mem.foodInRange = []
+            mem.dying += 0.05
+
+            if mem.dying > mem.stamina:
+                species.remove(mem)
+
+            else:
+                if mem.justEaten != 0:
+                    mem.justEaten -= 5
                 
-    for mem in species:
-        circleRectangle = pygame.Rect((mem.xPos, mem.yPos), (0, 0)).inflate((mem.sense * 2, mem.sense * 2))
-        circleSurface = pygame.Surface(circleRectangle.size, pygame.SRCALPHA)
-        pygame.draw.circle(circleSurface, (200,200,200,100), (mem.sense, mem.sense), mem.sense)
-        gameDisplay.blit(circleSurface, circleRectangle)
+                mem.color = (0 + mem.dying, 0 + mem.dying + mem.justEaten, 0 + mem.dying)
 
-    for mem in species:
-        pygame.draw.circle(gameDisplay, mem.color, (mem.xPos, mem.yPos), mem.size)
+                for storedFoodItem in mem.memoryBank:
+                    distanceFromItem = (((mem.xPos - storedFoodItem.xPos)**2) + ((mem.yPos - storedFoodItem.yPos)**2))**(1/2)
 
-    for f in food:
-        pygame.draw.circle(gameDisplay, f.color, f.position, f.size)
+                    if distanceFromItem <= mem.sense:
+                        if storedFoodItem not in food:
+                            mem.memoryBank.remove(storedFoodItem)
+                    else:
+                        mem.foodInRange.append(storedFoodItem)
 
-    pygame.draw.rect(gameDisplay, (255,255,255), (949, 0, (display_width - 949), display_height))
-    pygame.draw.rect(gameDisplay, (0,0,0), (949, 0, 2, display_height))
-    
-    
-    
-    if foodCounter == 60:
-        makeFood()
-        foodCounter = 0
+                for f in food:
+                    distance = (((mem.xPos - f.xPos)**2) + ((mem.yPos - f.yPos)**2))**(1/2)
 
-    pygame.display.update()
+                    if distance <= mem.size:
+                        food.remove(f)
+                        foodItemPoints += 1
+                        mem.memberFood += 1
+                        mem.justEaten = 100
+                        mem.dying -= 100
+                        if mem.dying < 0:
+                            mem.dying = 0
+                    elif distance <= mem.sense:
+                        mem.foodInRange.append(f)
+                
+                if mem.foodInRange != []:
+                    closest = mem.foodInRange[0]
+                    closestDistance = (((mem.xPos - closest.xPos)**2) + ((mem.yPos - closest.yPos)**2))**(1/2)
+
+                    for item in range(1, len(mem.foodInRange)):
+                        itemDistance = (((mem.xPos - mem.foodInRange[item].xPos)**2) + ((mem.yPos - mem.foodInRange[item].yPos)**2))**(1/2)
+                        if itemDistance < closestDistance:
+                            closest = mem.foodInRange[item]   
+                            closestDistance = (((mem.xPos - closest.xPos)**2) + ((mem.yPos - closest.yPos)**2))**(1/2)  
+
+                    mem.xPos += ((closest.xPos - mem.xPos)/closestDistance)*((mem.speed)**(1/2))
+                    mem.yPos += ((closest.yPos - mem.yPos)/closestDistance)*((mem.speed)**(1/2))
+
+                    mem.dying += mem.speed*0.01
+                
+                if mem.memory > 0:
+                    for item in mem.foodInRange:
+                        if len(mem.memoryBank) < mem.memory:
+                            if item not in mem.memoryBank:
+                                mem.memoryBank.append(item)
 
 
-# Game Over
+
+
+
+        pygame.draw.rect(gameDisplay, (255,255,255), (0, 0, display_width, display_height))
+                    
+        for mem in species:
+            circleRectangle = pygame.Rect((mem.xPos, mem.yPos), (0, 0)).inflate((mem.sense * 2, mem.sense * 2))
+            circleSurface = pygame.Surface(circleRectangle.size, pygame.SRCALPHA)
+            pygame.draw.circle(circleSurface, (200,200,200,100), (mem.sense, mem.sense), mem.sense)
+            gameDisplay.blit(circleSurface, circleRectangle)
+
+        for mem in species:
+            pygame.draw.circle(gameDisplay, mem.color, (mem.xPos, mem.yPos), mem.size)
+
+        for f in food:
+            pygame.draw.circle(gameDisplay, f.color, f.position, f.size)
+
+        pygame.draw.rect(gameDisplay, (255,255,255), (949, 0, (display_width - 949), display_height))
+        pygame.draw.rect(gameDisplay, (0,0,0), (949, 0, 2, display_height))
+
+        gameModeTextBox = TextBox("creative", 10, (1075,20), (0,0,0), "c", "LMLight.otf")
+        nameTextBox = TextBox(name, 20, (1075,40), (0,0,0), "c", "LemonMilk.otf")
+
+        foodPointsTextBox = TextBox("Food Points: ", 15, (965,100), (0,0,0), "l", "LemonMilk.otf")
+        foodPointsTextBoxNum = TextBox("Unlimited", 15, (1075,99), (0,0,0), "l", "LMLight.otf")
+
+
+
+        traitTxt = TextBox("Speed", 15, (965,150), (0,0,0), "l", "LemonMilk.otf")
+        traitImg = pygame.image.load('plusMinus.png')
+        gameDisplay.blit(traitImg, (965, 165))
+        traitQntTxt = TextBox(str(speciesSpeed), 15, (1072,185), (0,0,0), "c", "LemonMilk.otf")
+
+        traitTxt = TextBox("Stamina", 15, (965,250), (0,0,0), "l", "LemonMilk.otf")
+        traitImg = pygame.image.load('plusMinus.png')
+        gameDisplay.blit(traitImg, (965, 265))
+        traitQntTxt = TextBox(str(speciesStamina), 15, (1072,285), (0,0,0), "c", "LemonMilk.otf")
+
+        traitTxt = TextBox("Sense", 15, (965,350), (0,0,0), "l", "LemonMilk.otf")
+        traitImg = pygame.image.load('plusMinus.png')
+        gameDisplay.blit(traitImg, (965, 365))
+        traitQntTxt = TextBox(str(speciesSense), 15, (1072,385), (0,0,0), "c", "LemonMilk.otf")
+
+        traitTxt = TextBox("Memory", 15, (965,450), (0,0,0), "l", "LemonMilk.otf")
+        traitImg = pygame.image.load('plusMinus.png')
+        gameDisplay.blit(traitImg, (965, 465))
+        traitQntTxt = TextBox(str(speciesMemory), 15, (1072,485), (0,0,0), "c", "LemonMilk.otf")
+        
+        
+        if foodCounter == 60:
+            makeFood()
+            foodCounter = 0
+
+        pygame.display.update()
+
+## -------------------------------------- u V world --------------------------------------
+
+
+## -------------------------------------- Species Survival --------------------------------------
+if speciesSurvival == True:
+
+    speciesSpeed = 1
+    speciesStamina = 150
+    speciesSense = 100
+    speciesMemory = 1
+
+    if DNAslot1 == 'speed' or DNAslot2 == 'speed':
+        speciesSpeed = 3
+    if DNAslot1 == 'stamina' or DNAslot2 == 'stamina':
+        speciesStamina = 250
+    if DNAslot1 == 'sense' or DNAslot2 == 'sense':
+        speciesSense = 125
+    if DNAslot1 == 'memory' or DNAslot2 == 'memory':
+        speciesMemory = 5
+
+    for i in range(1,10):
+        makeMember(speciesSpeed, speciesStamina, speciesSense, speciesMemory)
+        
+    while cont == False:
+        clock.tick(60)
+        foodCounter += 1
+        mx, my = pygame.mouse.get_pos()
+
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                pygame.font.quit()
+                quit()
+
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    cont = True
+                    pygame.quit()
+                    pygame.font.quit()
+                    quit()
+            
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if mx in range(965,1005) and my in range(165,205):
+                    if speciesSpeed > 1:
+                        speciesSpeed -= 0.5
+                        foodItemPoints += 1
+                if mx in range(965 + 175,1005 + 175) and my in range(165,205):
+                    if foodItemPoints > 0:
+                        speciesSpeed += 0.5
+                        foodItemPoints -= 1
+
+
+                if mx in range(965,1005) and my in range(265,305):
+                    if speciesStamina > 1:
+                        speciesStamina -= 1
+                        foodItemPoints += 1
+                if mx in range(965 + 175,1005 + 175) and my in range(265,305):
+                    if foodItemPoints > 0:
+                        speciesStamina += 1
+                        foodItemPoints -= 1
+
+
+                if mx in range(965,1005) and my in range(365,405):
+                    if speciesSense > 1:
+                        speciesSense -= 1
+                        foodItemPoints += 1
+                if mx in range(965 + 175,1005 + 175) and my in range(365,405):
+                    if foodItemPoints > 0:
+                        speciesSense += 1
+                        foodItemPoints -= 1
+
+
+                if mx in range(965,1005) and my in range(465,505):
+                    if speciesMemory > 1:
+                        speciesMemory -= 1
+                        foodItemPoints += 1
+                if mx in range(965 + 175,1005 + 175) and my in range(465,505):
+                    if foodItemPoints > 0:
+                        speciesMemory += 1
+                        foodItemPoints -= 1
+
+        
+
+        for mem in species:
+
+            mem.speed = speciesSpeed
+            mem.sense = speciesSense
+            mem.stamina = speciesStamina
+            mem.memory = speciesMemory
+
+            # if mem.intelligence == 1:
+
+            mem.foodInRange = []
+            mem.dying += 0.05
+
+            if mem.dying > mem.stamina:
+                species.remove(mem)
+
+            else:
+                if mem.justEaten != 0:
+                    mem.justEaten -= 5
+                
+                mem.color = (0 + mem.dying, 0 + mem.dying + mem.justEaten, 0 + mem.dying)
+
+                for storedFoodItem in mem.memoryBank:
+                    distanceFromItem = (((mem.xPos - storedFoodItem.xPos)**2) + ((mem.yPos - storedFoodItem.yPos)**2))**(1/2)
+
+                    if distanceFromItem <= mem.sense:
+                        if storedFoodItem not in food:
+                            mem.memoryBank.remove(storedFoodItem)
+                    else:
+                        mem.foodInRange.append(storedFoodItem)
+
+                for f in food:
+                    distance = (((mem.xPos - f.xPos)**2) + ((mem.yPos - f.yPos)**2))**(1/2)
+
+                    if distance <= mem.size:
+                        food.remove(f)
+                        foodItemPoints += 1
+                        mem.memberFood += 1
+                        mem.justEaten = 100
+                        mem.dying -= 100
+                        if mem.dying < 0:
+                            mem.dying = 0
+                    elif distance <= mem.sense:
+                        mem.foodInRange.append(f)
+                
+                if mem.foodInRange != []:
+                    closest = mem.foodInRange[0]
+                    closestDistance = (((mem.xPos - closest.xPos)**2) + ((mem.yPos - closest.yPos)**2))**(1/2)
+
+                    for item in range(1, len(mem.foodInRange)):
+                        itemDistance = (((mem.xPos - mem.foodInRange[item].xPos)**2) + ((mem.yPos - mem.foodInRange[item].yPos)**2))**(1/2)
+                        if itemDistance < closestDistance:
+                            closest = mem.foodInRange[item]   
+                            closestDistance = (((mem.xPos - closest.xPos)**2) + ((mem.yPos - closest.yPos)**2))**(1/2)  
+
+                    mem.xPos += ((closest.xPos - mem.xPos)/closestDistance)*((mem.speed)**(1/2))
+                    mem.yPos += ((closest.yPos - mem.yPos)/closestDistance)*((mem.speed)**(1/2))
+
+                    mem.dying += mem.speed*0.01
+                
+                if mem.memory > 0:
+                    for item in mem.foodInRange:
+                        if len(mem.memoryBank) < mem.memory:
+                            if item not in mem.memoryBank:
+                                mem.memoryBank.append(item)
+
+
+
+
+
+        pygame.draw.rect(gameDisplay, (255,255,255), (0, 0, display_width, display_height))
+                    
+        for mem in species:
+            circleRectangle = pygame.Rect((mem.xPos, mem.yPos), (0, 0)).inflate((mem.sense * 2, mem.sense * 2))
+            circleSurface = pygame.Surface(circleRectangle.size, pygame.SRCALPHA)
+            pygame.draw.circle(circleSurface, (200,200,200,100), (mem.sense, mem.sense), mem.sense)
+            gameDisplay.blit(circleSurface, circleRectangle)
+
+        for mem in species:
+            pygame.draw.circle(gameDisplay, mem.color, (mem.xPos, mem.yPos), mem.size)
+
+        for f in food:
+            pygame.draw.circle(gameDisplay, f.color, f.position, f.size)
+
+        pygame.draw.rect(gameDisplay, (255,255,255), (949, 0, (display_width - 949), display_height))
+        pygame.draw.rect(gameDisplay, (0,0,0), (949, 0, 2, display_height))
+
+        gameModeTextBox = TextBox("creative", 10, (1075,20), (0,0,0), "c", "LMLight.otf")
+        nameTextBox = TextBox(name, 20, (1075,40), (0,0,0), "c", "LemonMilk.otf")
+
+        foodPointsTextBox = TextBox("Food Points: ", 15, (965,100), (0,0,0), "l", "LemonMilk.otf")
+        foodPointsTextBoxNum = TextBox(str(foodItemPoints), 15, (1075,99), (0,0,0), "l", "LMLight.otf")
+
+
+
+        traitTxt = TextBox("Speed", 15, (965,150), (0,0,0), "l", "LemonMilk.otf")
+        traitImg = pygame.image.load('plusMinus.png')
+        gameDisplay.blit(traitImg, (965, 165))
+        traitQntTxt = TextBox(str(speciesSpeed), 15, (1072,185), (0,0,0), "c", "LemonMilk.otf")
+
+        traitTxt = TextBox("Stamina", 15, (965,250), (0,0,0), "l", "LemonMilk.otf")
+        traitImg = pygame.image.load('plusMinus.png')
+        gameDisplay.blit(traitImg, (965, 265))
+        traitQntTxt = TextBox(str(speciesStamina), 15, (1072,285), (0,0,0), "c", "LemonMilk.otf")
+
+        traitTxt = TextBox("Sense", 15, (965,350), (0,0,0), "l", "LemonMilk.otf")
+        traitImg = pygame.image.load('plusMinus.png')
+        gameDisplay.blit(traitImg, (965, 365))
+        traitQntTxt = TextBox(str(speciesSense), 15, (1072,385), (0,0,0), "c", "LemonMilk.otf")
+
+        traitTxt = TextBox("Memory", 15, (965,450), (0,0,0), "l", "LemonMilk.otf")
+        traitImg = pygame.image.load('plusMinus.png')
+        gameDisplay.blit(traitImg, (965, 465))
+        traitQntTxt = TextBox(str(speciesMemory), 15, (1072,485), (0,0,0), "c", "LemonMilk.otf")
+        
+        
+        if foodCounter == 60:
+            makeFood()
+            foodCounter = 0
+
+        pygame.display.update()
+
+
+# ------------------------------------------- Game Over Pygame Closer -----------------------------------------------
 print("Awaiting End")
 pygame.quit()
 pygame.font.quit()
