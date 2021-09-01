@@ -650,6 +650,10 @@ if creative == True:
         makeMember(speciesSpeed, speciesStamina, speciesSense, speciesMemory)
         
     while cont == False:
+
+        if len(species) == 0:
+            cont = True
+
         clock.tick(60)
         foodCounter += 1
         foodItemPoints = 1000
@@ -820,6 +824,8 @@ if creative == True:
         traitImg = pygame.image.load('plusMinus.png')
         gameDisplay.blit(traitImg, (965, 465))
         traitQntTxt = TextBox(str(speciesMemory), 15, (1072,485), (0,0,0), "c", "LemonMilk.otf")
+
+        rmnTxt = TextBox("Remaining: " + str(len(species)) + "/9", 15, (965,550), (0,0,0), "l", "LemonMilk.otf")
         
         
         if foodCounter == 60:
@@ -914,6 +920,10 @@ if uVworld == True:
         species.append(Member(memSize, memColor, memSpeed, memStamina, memXPos, memYPos, memSense, memMemory, memIntelligence))
         
     while cont == False:
+
+        if len(uSpecies) == 0:
+            cont = True
+            
         clock.tick(60)
         foodCounter += 1
         mx, my = pygame.mouse.get_pos()
@@ -1198,7 +1208,7 @@ if uVworld == True:
         pygame.draw.rect(gameDisplay, (255,255,255), (949, 0, (display_width - 949), display_height))
         pygame.draw.rect(gameDisplay, (0,0,0), (949, 0, 2, display_height))
 
-        gameModeTextBox = TextBox("creative", 10, (1075,20), (0,0,0), "c", "LMLight.otf")
+        gameModeTextBox = TextBox("U V World", 10, (1075,20), (0,0,0), "c", "LMLight.otf")
         nameTextBox = TextBox(name, 20, (1075,40), (0,0,0), "c", "LemonMilk.otf")
 
         foodPointsTextBox = TextBox("Food Points: ", 15, (965,100), (0,0,0), "l", "LemonMilk.otf")
@@ -1227,11 +1237,11 @@ if uVworld == True:
         traitQntTxt = TextBox(str(speciesMemory), 15, (1072,485), (0,0,0), "c", "LemonMilk.otf")
 
         if len(uSpecies) > 0:
-            traitTxt = TextBox("Health: " + str(int(uSpecies[0].stamina - uSpecies[0].dying)) + "/" + str(int(uSpecies[0].stamina)), 15, (965,550), (0,0,0), "l", "LemonMilk.otf")
+            hltTxt = TextBox("Health: " + str(int(uSpecies[0].stamina - uSpecies[0].dying)) + "/" + str(int(uSpecies[0].stamina)), 15, (965,550), (0,0,0), "l", "LemonMilk.otf")
         else:
-            traitTxt = TextBox("Health: 0", 15, (965,550), (0,0,0), "l", "LemonMilk.otf")
+            hltTxt = TextBox("Health: 0", 15, (965,550), (0,0,0), "l", "LemonMilk.otf")
 
-        traitTxt = TextBox("Remaining: " + str(len(species) + len(uSpecies)) + "/12", 15, (965,600), (0,0,0), "l", "LemonMilk.otf")
+        rmnTxt = TextBox("Remaining: " + str(len(species) + len(uSpecies)) + "/12", 15, (965,600), (0,0,0), "l", "LemonMilk.otf")
         
         
         if foodCounter == 60:
@@ -1261,6 +1271,10 @@ if speciesSurvival == True:
         makeMember(speciesSpeed, speciesStamina, speciesSense, speciesMemory)
         
     while cont == False:
+
+        if len(species) == 0:
+            cont = True
+
         clock.tick(60)
         foodCounter += 1
         mx, my = pygame.mouse.get_pos()
@@ -1277,6 +1291,8 @@ if speciesSurvival == True:
                     pygame.quit()
                     pygame.font.quit()
                     quit()
+                if event.key == pygame.K_e:
+                    speciesStamina = 20
             
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if mx in range(965,1005) and my in range(165,205):
@@ -1402,7 +1418,7 @@ if speciesSurvival == True:
         pygame.draw.rect(gameDisplay, (255,255,255), (949, 0, (display_width - 949), display_height))
         pygame.draw.rect(gameDisplay, (0,0,0), (949, 0, 2, display_height))
 
-        gameModeTextBox = TextBox("creative", 10, (1075,20), (0,0,0), "c", "LMLight.otf")
+        gameModeTextBox = TextBox("survivor", 10, (1075,20), (0,0,0), "c", "LMLight.otf")
         nameTextBox = TextBox(name, 20, (1075,40), (0,0,0), "c", "LemonMilk.otf")
 
         foodPointsTextBox = TextBox("Food Points: ", 15, (965,100), (0,0,0), "l", "LemonMilk.otf")
@@ -1429,6 +1445,8 @@ if speciesSurvival == True:
         traitImg = pygame.image.load('plusMinus.png')
         gameDisplay.blit(traitImg, (965, 465))
         traitQntTxt = TextBox(str(speciesMemory), 15, (1072,485), (0,0,0), "c", "LemonMilk.otf")
+
+        rmnTxt = TextBox("Remaining: " + str(len(species)) + "/9", 15, (965,550), (0,0,0), "l", "LemonMilk.otf")
         
         
         if foodCounter == 60:
@@ -1436,6 +1454,38 @@ if speciesSurvival == True:
             foodCounter = 0
 
         pygame.display.update()
+
+# ------------------------------------------- Game Over -----------------------------------------------
+ender = False
+
+circleRectangle = pygame.Rect((display_width/2, display_height/2), (0, 0)).inflate((display_width*2, display_width*2))
+circleSurface = pygame.Surface(circleRectangle.size, pygame.SRCALPHA)
+pygame.draw.circle(circleSurface, (130,130,130,125), (display_width, display_width), display_width)
+gameDisplay.blit(circleSurface, circleRectangle)
+
+traitTxt = TextBox("Game Over", 100, (display_width/2,display_height/2), (0,0,0), "c", "LemonMilk.otf")
+traitTxt = TextBox("Press Escape to Close", 40, (display_width/2,(display_height/2)+85), (0,0,0), "c", "LMlight.otf")
+
+pygame.display.update()
+
+while ender == False:
+
+    clock.tick(60)
+    foodCounter += 1
+    mx, my = pygame.mouse.get_pos()
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            pygame.font.quit()
+            quit()
+
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                ender == True
+                pygame.quit()
+                pygame.font.quit()
+                quit()
 
 # ------------------------------------------- Game Over Pygame Closer -----------------------------------------------
 print("Awaiting End")
