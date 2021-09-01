@@ -112,6 +112,8 @@ def makeFood():
 
 foodCounter = 0
 
+hard = False
+
 ## -------------------------------------- Intro --------------------------------------
 introCounter = 0
 while end == False:
@@ -671,7 +673,6 @@ if creative == True:
                 if mx in range(965,1005) and my in range(165,205):
                     if speciesSpeed > 1:
                         speciesSpeed -= 0.5
-                        foodItemPoints += 1
                 if mx in range(965 + 175,1005 + 175) and my in range(165,205):
                     if foodItemPoints > 0:
                         speciesSpeed += 0.5
@@ -680,18 +681,16 @@ if creative == True:
 
                 if mx in range(965,1005) and my in range(265,305):
                     if speciesStamina > 1:
-                        speciesStamina -= 1
-                        foodItemPoints += 1
+                        speciesStamina -= 5
                 if mx in range(965 + 175,1005 + 175) and my in range(265,305):
                     if foodItemPoints > 0:
-                        speciesStamina += 1
+                        speciesStamina += 5
                         foodItemPoints -= 1
 
 
                 if mx in range(965,1005) and my in range(365,405):
                     if speciesSense > 1:
                         speciesSense -= 1
-                        foodItemPoints += 1
                 if mx in range(965 + 175,1005 + 175) and my in range(365,405):
                     if foodItemPoints > 0:
                         speciesSense += 1
@@ -701,7 +700,6 @@ if creative == True:
                 if mx in range(965,1005) and my in range(465,505):
                     if speciesMemory > 1:
                         speciesMemory -= 1
-                        foodItemPoints += 1
                 if mx in range(965 + 175,1005 + 175) and my in range(465,505):
                     if foodItemPoints > 0:
                         speciesMemory += 1
@@ -830,8 +828,51 @@ if creative == True:
 
         pygame.display.update()
 
+## -------------------------------------- u V world Sub-Menu --------------------------------------
+if uVworld == True:
+    end = False
+    while end == False:
+        clock.tick(60)
+        mx, my = pygame.mouse.get_pos()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                pygame.font.quit()
+                quit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    cont = True
+                    pygame.quit()
+                    pygame.font.quit()
+                    quit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if 0 < mx < 600:
+                    hard = True
+                    end = True
+                else:
+                    hard = False
+                    end = True
+
+        pygame.draw.rect(gameDisplay, (255,255,255), (0, 0, display_width, display_height))
+
+        heading = TextBox("Hard", 100, (300,display_height/2), (0,0,0), "c", "LemonMilk.otf")
+        heading.display()
+
+        pygame.draw.rect(gameDisplay, (0,0,0), (595, 0, 10, display_height))
+
+        heading = TextBox("Easy", 100, (900,display_height/2), (0,0,0), "c", "LemonMilk.otf")
+        heading.display()
+
+        pygame.display.update()
+
 ## -------------------------------------- u V world --------------------------------------
 if uVworld == True:
+
+    wIsDown = False
+    sIsDown = False
+    aIsDown = False
+    dIsDown = False
 
     speciesSpeed = 1
     speciesStamina = 150
@@ -847,7 +888,17 @@ if uVworld == True:
     if DNAslot1 == 'memory' or DNAslot2 == 'memory':
         speciesMemory = 5
     
-    makeMember(speciesSpeed, speciesStamina, speciesSense, speciesMemory)
+    memSize = 15
+    memColor = (0,0,0)
+    memSpeed = speciesSpeed
+    memStamina = speciesStamina
+    memSense = speciesSense
+    memXPos = random.randrange(15,950 - 15)
+    memYPos = random.randrange(15,display_height - 15)
+    memMemory = speciesMemory
+    memIntelligence = 1
+
+    uSpecies = [Member(memSize, memColor, memSpeed, memStamina, memXPos, memYPos, memSense, memMemory, memIntelligence)]
 
     for i in range(1,12):
         memSize = 15
@@ -879,12 +930,31 @@ if uVworld == True:
                     pygame.quit()
                     pygame.font.quit()
                     quit()
+
+                if event.key == pygame.K_w:
+                    wIsDown = True
+                if event.key == pygame.K_s:
+                    sIsDown = True
+                if event.key == pygame.K_a:
+                    aIsDown = True
+                if event.key == pygame.K_d:
+                    dIsDown = True
+            
+            if event.type == pygame.KEYUP:
+                
+                if event.key == pygame.K_w:
+                    wIsDown = False
+                if event.key == pygame.K_s:
+                    sIsDown = False
+                if event.key == pygame.K_a:
+                    aIsDown = False
+                if event.key == pygame.K_d:
+                    dIsDown = False
             
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if mx in range(965,1005) and my in range(165,205):
                     if speciesSpeed > 1:
                         speciesSpeed -= 0.5
-                        foodItemPoints += 1
                 if mx in range(965 + 175,1005 + 175) and my in range(165,205):
                     if foodItemPoints > 0:
                         speciesSpeed += 0.5
@@ -893,18 +963,16 @@ if uVworld == True:
 
                 if mx in range(965,1005) and my in range(265,305):
                     if speciesStamina > 1:
-                        speciesStamina -= 1
-                        foodItemPoints += 1
+                        speciesStamina -= 5
                 if mx in range(965 + 175,1005 + 175) and my in range(265,305):
                     if foodItemPoints > 0:
-                        speciesStamina += 1
+                        speciesStamina += 5
                         foodItemPoints -= 1
 
 
                 if mx in range(965,1005) and my in range(365,405):
                     if speciesSense > 1:
                         speciesSense -= 1
-                        foodItemPoints += 1
                 if mx in range(965 + 175,1005 + 175) and my in range(365,405):
                     if foodItemPoints > 0:
                         speciesSense += 1
@@ -914,15 +982,104 @@ if uVworld == True:
                 if mx in range(965,1005) and my in range(465,505):
                     if speciesMemory > 1:
                         speciesMemory -= 1
-                        foodItemPoints += 1
                 if mx in range(965 + 175,1005 + 175) and my in range(465,505):
                     if foodItemPoints > 0:
                         speciesMemory += 1
                         foodItemPoints -= 1
 
-        
+        for mem in uSpecies: 
+            if wIsDown == True and mem.yPos - (1 * (mem.speed*0.6)**(1/2)) > (mem.size *2)/2 and sIsDown == False:
+                mem.yPos -= 1 * (mem.speed*0.6)**(1/2)
+                mem.dying += mem.speed*0.01
+            
+            if sIsDown == True  and mem.yPos + (1 * (mem.speed*0.6)**(1/2)) < display_height - (mem.size *2)/2 and wIsDown == False:
+                mem.yPos += 1 * (mem.speed*0.6)**(1/2)
+                mem.dying += mem.speed*0.01
+
+            if aIsDown == True  and mem.xPos - (1 * (mem.speed*0.6)**(1/2)) > (mem.size *2)/2 and dIsDown == False:
+                mem.xPos -= 1 * (mem.speed*0.6)**(1/2)
+                mem.dying += mem.speed*0.01
+            
+            if dIsDown == True  and mem.xPos + (1 * (mem.speed*0.6)**(1/2)) < 950 - (mem.size *2)/2 and aIsDown == False:
+                mem.xPos += 1 * (mem.speed*0.6)**(1/2)
+                mem.dying += mem.speed*0.01
 
         for mem in species:
+
+            # if mem.intelligence == 1:
+
+            mem.foodInRange = []
+            mem.dying += 0.05
+
+            if mem.memberFood > 1:
+                picker = random.randrange(1,4)
+
+                if picker == 1:
+                    mem.speed += 0.5
+                    mem.memberFood -= 1
+                elif picker == 2:
+                    mem.stamina += 5
+                    mem.memberFood -= 1
+                elif picker == 3:
+                    mem.sense += 1
+                    mem.memberFood -= 1
+                else:
+                    mem.memory += 1
+                    mem.memberFood -= 1
+
+            if mem.dying > mem.stamina:
+                species.remove(mem)
+
+            else:
+                if mem.justEaten != 0:
+                    mem.justEaten -= 5
+                
+                mem.color = (0 + mem.dying, 0 + mem.dying + mem.justEaten, 0 + mem.dying)
+
+                for storedFoodItem in mem.memoryBank:
+                    distanceFromItem = (((mem.xPos - storedFoodItem.xPos)**2) + ((mem.yPos - storedFoodItem.yPos)**2))**(1/2)
+
+                    if distanceFromItem <= mem.sense:
+                        if storedFoodItem not in food:
+                            mem.memoryBank.remove(storedFoodItem)
+                    else:
+                        mem.foodInRange.append(storedFoodItem)
+
+                for f in food:
+                    distance = (((mem.xPos - f.xPos)**2) + ((mem.yPos - f.yPos)**2))**(1/2)
+
+                    if distance <= mem.size:
+                        food.remove(f)
+                        mem.memberFood += 1
+                        mem.justEaten = 100
+                        mem.dying -= 100
+                        if mem.dying < 0:
+                            mem.dying = 0
+                    elif distance <= mem.sense:
+                        mem.foodInRange.append(f)
+                
+                if mem.foodInRange != []:
+                    closest = mem.foodInRange[0]
+                    closestDistance = (((mem.xPos - closest.xPos)**2) + ((mem.yPos - closest.yPos)**2))**(1/2)
+
+                    for item in range(1, len(mem.foodInRange)):
+                        itemDistance = (((mem.xPos - mem.foodInRange[item].xPos)**2) + ((mem.yPos - mem.foodInRange[item].yPos)**2))**(1/2)
+                        if itemDistance < closestDistance:
+                            closest = mem.foodInRange[item]   
+                            closestDistance = (((mem.xPos - closest.xPos)**2) + ((mem.yPos - closest.yPos)**2))**(1/2)  
+
+                    mem.xPos += ((closest.xPos - mem.xPos)/closestDistance)*((mem.speed)**(1/2))
+                    mem.yPos += ((closest.yPos - mem.yPos)/closestDistance)*((mem.speed)**(1/2))
+
+                    mem.dying += mem.speed*0.01
+                
+                if mem.memory > 0:
+                    for item in mem.foodInRange:
+                        if len(mem.memoryBank) < mem.memory:
+                            if item not in mem.memoryBank:
+                                mem.memoryBank.append(item)
+        
+        for mem in uSpecies:
 
             mem.speed = speciesSpeed
             mem.sense = speciesSense
@@ -935,7 +1092,7 @@ if uVworld == True:
             mem.dying += 0.05
 
             if mem.dying > mem.stamina:
-                species.remove(mem)
+                uSpecies.remove(mem)
 
             else:
                 if mem.justEaten != 0:
@@ -975,11 +1132,12 @@ if uVworld == True:
                         if itemDistance < closestDistance:
                             closest = mem.foodInRange[item]   
                             closestDistance = (((mem.xPos - closest.xPos)**2) + ((mem.yPos - closest.yPos)**2))**(1/2)  
+                    
+                    if aIsDown == False and dIsDown == False and wIsDown == False and sIsDown == False:
+                        mem.xPos += ((closest.xPos - mem.xPos)/closestDistance)*((mem.speed)**(1/2))
+                        mem.yPos += ((closest.yPos - mem.yPos)/closestDistance)*((mem.speed)**(1/2))
 
-                    mem.xPos += ((closest.xPos - mem.xPos)/closestDistance)*((mem.speed)**(1/2))
-                    mem.yPos += ((closest.yPos - mem.yPos)/closestDistance)*((mem.speed)**(1/2))
-
-                    mem.dying += mem.speed*0.01
+                        mem.dying += mem.speed*0.01
                 
                 if mem.memory > 0:
                     for item in mem.foodInRange:
@@ -1001,13 +1159,41 @@ if uVworld == True:
 
         for mem in species:
             pygame.draw.circle(gameDisplay, mem.color, (mem.xPos, mem.yPos), mem.size)
+
             circleRectangle = pygame.Rect((mem.xPos, mem.yPos), (0, 0)).inflate((mem.size * 2, mem.size * 2))
             circleSurface = pygame.Surface(circleRectangle.size, pygame.SRCALPHA)
             pygame.draw.circle(circleSurface, (mem.colorOG[0],mem.colorOG[1],mem.colorOG[2],100), (mem.size, mem.size), mem.size)
             gameDisplay.blit(circleSurface, circleRectangle)
+        
+        for mem in uSpecies:
+            if hard == True:
+                circleRectangleHrd = pygame.Rect((mem.xPos, mem.yPos), (0, 0)).inflate((mem.sense * 2, mem.sense * 2))
+                circleSurfaceHrd = pygame.Surface(circleRectangleHrd.size, pygame.SRCALPHA)
+
+                pygame.draw.rect(circleSurfaceHrd, (126,126,126,255), (0, 0, display_width, display_height))
+
+                pygame.draw.circle(circleSurfaceHrd, (0,0,220,10), (mem.sense, mem.sense), mem.sense)
+    
+
+            else:
+                circleRectangle = pygame.Rect((mem.xPos, mem.yPos), (0, 0)).inflate((mem.sense * 2, mem.sense * 2))
+                circleSurface = pygame.Surface(circleRectangle.size, pygame.SRCALPHA)
+                pygame.draw.circle(circleSurface, (0,0,220,10), (mem.sense, mem.sense), mem.sense)
+                gameDisplay.blit(circleSurface, circleRectangle)
+
+        for mem in uSpecies:
+            pygame.draw.circle(gameDisplay, mem.color, (mem.xPos, mem.yPos), mem.size)
 
         for f in food:
             pygame.draw.circle(gameDisplay, f.color, f.position, f.size)
+
+        
+        if hard == True:
+            pygame.draw.rect(gameDisplay, (126,126,126), (0, 0, 950, mem.yPos - mem.sense))
+            pygame.draw.rect(gameDisplay, (126,126,126), (0, mem.yPos + mem.sense, 950, display_height))
+            pygame.draw.rect(gameDisplay, (126,126,126), (0, 0, mem.xPos - mem.sense, display_height))
+            pygame.draw.rect(gameDisplay, (126,126,126), (mem.xPos + mem.sense, 0, 950, display_height))
+            gameDisplay.blit(circleSurfaceHrd, circleRectangleHrd)
 
         pygame.draw.rect(gameDisplay, (255,255,255), (949, 0, (display_width - 949), display_height))
         pygame.draw.rect(gameDisplay, (0,0,0), (949, 0, 2, display_height))
@@ -1039,6 +1225,13 @@ if uVworld == True:
         traitImg = pygame.image.load('plusMinus.png')
         gameDisplay.blit(traitImg, (965, 465))
         traitQntTxt = TextBox(str(speciesMemory), 15, (1072,485), (0,0,0), "c", "LemonMilk.otf")
+
+        if len(uSpecies) > 0:
+            traitTxt = TextBox("Health: " + str(int(uSpecies[0].stamina - uSpecies[0].dying)) + "/" + str(int(uSpecies[0].stamina)), 15, (965,550), (0,0,0), "l", "LemonMilk.otf")
+        else:
+            traitTxt = TextBox("Health: 0", 15, (965,550), (0,0,0), "l", "LemonMilk.otf")
+
+        traitTxt = TextBox("Remaining: " + str(len(species) + len(uSpecies)) + "/12", 15, (965,600), (0,0,0), "l", "LemonMilk.otf")
         
         
         if foodCounter == 60:
@@ -1089,7 +1282,6 @@ if speciesSurvival == True:
                 if mx in range(965,1005) and my in range(165,205):
                     if speciesSpeed > 1:
                         speciesSpeed -= 0.5
-                        foodItemPoints += 1
                 if mx in range(965 + 175,1005 + 175) and my in range(165,205):
                     if foodItemPoints > 0:
                         speciesSpeed += 0.5
@@ -1098,18 +1290,16 @@ if speciesSurvival == True:
 
                 if mx in range(965,1005) and my in range(265,305):
                     if speciesStamina > 1:
-                        speciesStamina -= 1
-                        foodItemPoints += 1
+                        speciesStamina -= 5
                 if mx in range(965 + 175,1005 + 175) and my in range(265,305):
                     if foodItemPoints > 0:
-                        speciesStamina += 1
+                        speciesStamina += 5
                         foodItemPoints -= 1
 
 
                 if mx in range(965,1005) and my in range(365,405):
                     if speciesSense > 1:
                         speciesSense -= 1
-                        foodItemPoints += 1
                 if mx in range(965 + 175,1005 + 175) and my in range(365,405):
                     if foodItemPoints > 0:
                         speciesSense += 1
@@ -1119,7 +1309,6 @@ if speciesSurvival == True:
                 if mx in range(965,1005) and my in range(465,505):
                     if speciesMemory > 1:
                         speciesMemory -= 1
-                        foodItemPoints += 1
                 if mx in range(965 + 175,1005 + 175) and my in range(465,505):
                     if foodItemPoints > 0:
                         speciesMemory += 1
