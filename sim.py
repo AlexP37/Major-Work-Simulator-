@@ -13,6 +13,7 @@ cont = False
 end = False
 movementX = 0
 movementY = 0
+moveThemArround = False
 
 display_width = 1200
 display_height = 800
@@ -84,6 +85,8 @@ class Member():
         self.memoryBank = []
         self.intelligence = intelligence
         self.memberFood = 0
+        self.newLocationX = xPos
+        self.newLocationY = yPos
 
         self.justEaten = 0
         self.dying = 0
@@ -708,6 +711,12 @@ if creative == True:
                     if foodItemPoints > 0:
                         speciesMemory += 1
                         foodItemPoints -= 1
+                
+                if mx in range(965,1045) and my in range(615,655):
+                    if moveThemArround == True:
+                        moveThemArround = False
+                    else:
+                        moveThemArround = True
 
         
 
@@ -730,8 +739,12 @@ if creative == True:
                 if mem.justEaten != 0:
                     mem.justEaten -= 5
                 
-                mem.color = (0 + mem.dying, 0 + mem.dying + mem.justEaten, 0 + mem.dying)
+                if (150*mem.dying)/mem.stamina) < 150:
+                    mem.color = (0 + ((150*mem.dying)/mem.stamina), 0 + ((150*mem.dying)/mem.stamina) + mem.justEaten, 0 + ((150*mem.dying)/mem.stamina))
+                else:
+                    mem.color = (150, 150 + mem.justEaten, 150)
 
+                    
                 for storedFoodItem in mem.memoryBank:
                     distanceFromItem = (((mem.xPos - storedFoodItem.xPos)**2) + ((mem.yPos - storedFoodItem.yPos)**2))**(1/2)
 
@@ -768,6 +781,16 @@ if creative == True:
                     mem.xPos += ((closest.xPos - mem.xPos)/closestDistance)*((mem.speed)**(1/2))
                     mem.yPos += ((closest.yPos - mem.yPos)/closestDistance)*((mem.speed)**(1/2))
 
+                    mem.dying += mem.speed*0.01
+                elif moveThemArround == True: 
+                    newDistance = (((mem.xPos - mem.newLocationX)**2) + ((mem.yPos - mem.newLocationY)**2))**(1/2) 
+                    if -mem.size < newDistance < mem.size:
+                        mem.newLocationX = random.randrange(mem.size, 950-mem.size)
+                        mem.newLocationY = random.randrange(mem.size, display_height - mem.size)
+
+                    newDistance = (((mem.xPos - mem.newLocationX)**2) + ((mem.yPos - mem.newLocationY)**2))**(1/2) 
+                    mem.xPos += ((mem.newLocationX - mem.xPos)/newDistance)*((mem.speed)**(1/2))
+                    mem.yPos += ((mem.newLocationY - mem.yPos)/newDistance)*((mem.speed)**(1/2))
                     mem.dying += mem.speed*0.01
                 
                 if mem.memory > 0:
@@ -826,6 +849,14 @@ if creative == True:
         traitQntTxt = TextBox(str(speciesMemory), 15, (1072,485), (0,0,0), "c", "LemonMilk.otf")
 
         rmnTxt = TextBox("Remaining: " + str(len(species)) + "/9", 15, (965,550), (0,0,0), "l", "LemonMilk.otf")
+
+        mvnTxt = TextBox("Self-Move" , 15, (965,600), (0,0,0), "l", "LemonMilk.otf")
+        if moveThemArround == True:
+            mvnImg = pygame.image.load('on.png')
+        else:
+            mvnImg = pygame.image.load('off.png')
+        gameDisplay.blit(mvnImg, (965, 615))
+        
         
         
         if foodCounter == 60:
@@ -920,9 +951,6 @@ if uVworld == True:
         species.append(Member(memSize, memColor, memSpeed, memStamina, memXPos, memYPos, memSense, memMemory, memIntelligence))
         
     while cont == False:
-
-        if len(uSpecies) == 0:
-            cont = True
             
         clock.tick(60)
         foodCounter += 1
@@ -949,6 +977,9 @@ if uVworld == True:
                     aIsDown = True
                 if event.key == pygame.K_d:
                     dIsDown = True
+
+                if event.key == pygame.K_o:
+                    species = [Member(memSize, memColor, memSpeed, memStamina, memXPos, memYPos, memSense, memMemory, memIntelligence)] #JESUS CHRIST
             
             if event.type == pygame.KEYUP:
                 
@@ -1044,7 +1075,11 @@ if uVworld == True:
                 if mem.justEaten != 0:
                     mem.justEaten -= 5
                 
-                mem.color = (0 + mem.dying, 0 + mem.dying + mem.justEaten, 0 + mem.dying)
+                if (150*mem.dying)/mem.stamina) < 150:
+                    mem.color = (0 + ((150*mem.dying)/mem.stamina), 0 + ((150*mem.dying)/mem.stamina) + mem.justEaten, 0 + ((150*mem.dying)/mem.stamina))
+                else:
+                    mem.color = (150, 150 + mem.justEaten, 150)
+
 
                 for storedFoodItem in mem.memoryBank:
                     distanceFromItem = (((mem.xPos - storedFoodItem.xPos)**2) + ((mem.yPos - storedFoodItem.yPos)**2))**(1/2)
@@ -1076,12 +1111,23 @@ if uVworld == True:
                         itemDistance = (((mem.xPos - mem.foodInRange[item].xPos)**2) + ((mem.yPos - mem.foodInRange[item].yPos)**2))**(1/2)
                         if itemDistance < closestDistance:
                             closest = mem.foodInRange[item]   
-                            closestDistance = (((mem.xPos - closest.xPos)**2) + ((mem.yPos - closest.yPos)**2))**(1/2)  
+                            closestDistance = (((mem.xPos - closest.xPos)**2) + ((mem.yPos - closest.yPos)**2))**(1/2) 
 
                     mem.xPos += ((closest.xPos - mem.xPos)/closestDistance)*((mem.speed)**(1/2))
                     mem.yPos += ((closest.yPos - mem.yPos)/closestDistance)*((mem.speed)**(1/2))
 
                     mem.dying += mem.speed*0.01
+                else: 
+                    newDistance = (((mem.xPos - mem.newLocationX)**2) + ((mem.yPos - mem.newLocationY)**2))**(1/2) 
+                    if -mem.size < newDistance < mem.size:
+                        mem.newLocationX = random.randrange(mem.size, 950-mem.size)
+                        mem.newLocationY = random.randrange(mem.size, display_height - mem.size)
+
+                    newDistance = (((mem.xPos - mem.newLocationX)**2) + ((mem.yPos - mem.newLocationY)**2))**(1/2) 
+                    mem.xPos += ((mem.newLocationX - mem.xPos)/newDistance)*((mem.speed)**(1/2))
+                    mem.yPos += ((mem.newLocationY - mem.yPos)/newDistance)*((mem.speed)**(1/2))
+                    mem.dying += mem.speed*0.01
+
                 
                 if mem.memory > 0:
                     for item in mem.foodInRange:
@@ -1108,7 +1154,11 @@ if uVworld == True:
                 if mem.justEaten != 0:
                     mem.justEaten -= 5
                 
-                mem.color = (0 + mem.dying, 0 + mem.dying + mem.justEaten, 0 + mem.dying)
+                if (150*mem.dying)/mem.stamina) < 150:
+                    mem.color = (0 + ((150*mem.dying)/mem.stamina), 0 + ((150*mem.dying)/mem.stamina) + mem.justEaten, 0 + ((150*mem.dying)/mem.stamina))
+                else:
+                    mem.color = (150, 150 + mem.justEaten, 150)
+
 
                 for storedFoodItem in mem.memoryBank:
                     distanceFromItem = (((mem.xPos - storedFoodItem.xPos)**2) + ((mem.yPos - storedFoodItem.yPos)**2))**(1/2)
@@ -1197,18 +1247,18 @@ if uVworld == True:
         for f in food:
             pygame.draw.circle(gameDisplay, f.color, f.position, f.size)
 
-        
-        if hard == True:
-            pygame.draw.rect(gameDisplay, (126,126,126), (0, 0, 950, mem.yPos - mem.sense))
-            pygame.draw.rect(gameDisplay, (126,126,126), (0, mem.yPos + mem.sense, 950, display_height))
-            pygame.draw.rect(gameDisplay, (126,126,126), (0, 0, mem.xPos - mem.sense, display_height))
-            pygame.draw.rect(gameDisplay, (126,126,126), (mem.xPos + mem.sense, 0, 950, display_height))
-            gameDisplay.blit(circleSurfaceHrd, circleRectangleHrd)
+        for mem in uSpecies:
+            if hard == True:
+                pygame.draw.rect(gameDisplay, (126,126,126), (0, 0, 950, mem.yPos - mem.sense))
+                pygame.draw.rect(gameDisplay, (126,126,126), (0, mem.yPos + mem.sense, 950, display_height))
+                pygame.draw.rect(gameDisplay, (126,126,126), (0, 0, mem.xPos - mem.sense, display_height))
+                pygame.draw.rect(gameDisplay, (126,126,126), (mem.xPos + mem.sense, 0, 950, display_height))
+                gameDisplay.blit(circleSurfaceHrd, circleRectangleHrd)
 
         pygame.draw.rect(gameDisplay, (255,255,255), (949, 0, (display_width - 949), display_height))
         pygame.draw.rect(gameDisplay, (0,0,0), (949, 0, 2, display_height))
 
-        gameModeTextBox = TextBox("U V World", 10, (1075,20), (0,0,0), "c", "LMLight.otf")
+        gameModeTextBox = TextBox("U Vs World", 10, (1075,20), (0,0,0), "c", "LMLight.otf")
         nameTextBox = TextBox(name, 20, (1075,40), (0,0,0), "c", "LemonMilk.otf")
 
         foodPointsTextBox = TextBox("Food Points: ", 15, (965,100), (0,0,0), "l", "LemonMilk.otf")
@@ -1243,10 +1293,18 @@ if uVworld == True:
 
         rmnTxt = TextBox("Remaining: " + str(len(species) + len(uSpecies)) + "/12", 15, (965,600), (0,0,0), "l", "LemonMilk.otf")
         
+        if len(species) > 0:
+            if foodCounter >= 540/len(species):
+                makeFood()
+                foodCounter = 0
+        else:
+            if foodCounter >= 540:
+                makeFood()
+                foodCounter = 0
+
         
-        if foodCounter == 60:
-            makeFood()
-            foodCounter = 0
+        if len(uSpecies) == 0 or len(species) == 0:
+            cont = True
 
         pygame.display.update()
 
@@ -1291,8 +1349,6 @@ if speciesSurvival == True:
                     pygame.quit()
                     pygame.font.quit()
                     quit()
-                if event.key == pygame.K_e:
-                    speciesStamina = 20
             
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if mx in range(965,1005) and my in range(165,205):
@@ -1350,8 +1406,13 @@ if speciesSurvival == True:
             else:
                 if mem.justEaten != 0:
                     mem.justEaten -= 5
-                
-                mem.color = (0 + mem.dying, 0 + mem.dying + mem.justEaten, 0 + mem.dying)
+
+
+                if (150*mem.dying)/mem.stamina) < 150:
+                    mem.color = (0 + ((150*mem.dying)/mem.stamina), 0 + ((150*mem.dying)/mem.stamina) + mem.justEaten, 0 + ((150*mem.dying)/mem.stamina))
+                else:
+                    mem.color = (150, 150 + mem.justEaten, 150)
+
 
                 for storedFoodItem in mem.memoryBank:
                     distanceFromItem = (((mem.xPos - storedFoodItem.xPos)**2) + ((mem.yPos - storedFoodItem.yPos)**2))**(1/2)
@@ -1389,6 +1450,16 @@ if speciesSurvival == True:
                     mem.xPos += ((closest.xPos - mem.xPos)/closestDistance)*((mem.speed)**(1/2))
                     mem.yPos += ((closest.yPos - mem.yPos)/closestDistance)*((mem.speed)**(1/2))
 
+                    mem.dying += mem.speed*0.01
+                elif moveThemArround == True: 
+                    newDistance = (((mem.xPos - mem.newLocationX)**2) + ((mem.yPos - mem.newLocationY)**2))**(1/2) 
+                    if -mem.size < newDistance < mem.size:
+                        mem.newLocationX = random.randrange(mem.size, 950-mem.size)
+                        mem.newLocationY = random.randrange(mem.size, display_height - mem.size)
+
+                    newDistance = (((mem.xPos - mem.newLocationX)**2) + ((mem.yPos - mem.newLocationY)**2))**(1/2) 
+                    mem.xPos += ((mem.newLocationX - mem.xPos)/newDistance)*((mem.speed)**(1/2))
+                    mem.yPos += ((mem.newLocationY - mem.yPos)/newDistance)*((mem.speed)**(1/2))
                     mem.dying += mem.speed*0.01
                 
                 if mem.memory > 0:
@@ -1463,8 +1534,23 @@ circleSurface = pygame.Surface(circleRectangle.size, pygame.SRCALPHA)
 pygame.draw.circle(circleSurface, (130,130,130,125), (display_width, display_width), display_width)
 gameDisplay.blit(circleSurface, circleRectangle)
 
-traitTxt = TextBox("Game Over", 100, (display_width/2,display_height/2), (0,0,0), "c", "LemonMilk.otf")
-traitTxt = TextBox("Press Escape to Close", 40, (display_width/2,(display_height/2)+85), (0,0,0), "c", "LMlight.otf")
+finalText = "Game Over"
+finalTextCol = (0,0,0)
+
+if uVworld == True:
+    if len(species) == 0:
+        if len(uSpecies) == 1:
+            finalText = "You Win"
+            finalTextCol = (0,120,0)
+        else:
+            endTxt = TextBox(str(len(species)) + " remaining", 25, (display_width/2,(display_height/2)-85), (120,0,0), "c", "LMlight.otf")
+    else:
+        endTxt = TextBox(str(len(species)) + " remaining", 25, (display_width/2,(display_height/2)-85), (120,0,0), "c", "LMlight.otf")
+
+
+endTxt = TextBox(finalText, 100, (display_width/2,display_height/2), finalTextCol, "c", "LemonMilk.otf")
+endTxt = TextBox("Press Escape to Close", 40, (display_width/2,(display_height/2)+85), (0,0,0), "c", "LMlight.otf")
+
 
 pygame.display.update()
 
