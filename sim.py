@@ -1,4 +1,4 @@
-# Initialization of Game
+## ------------------------------------ Initialisation ------------------------------------
 import os
 import pygame
 import math
@@ -11,9 +11,18 @@ pygame.font.init()
 
 cont = False
 end = False
+
 movementX = 0
 movementY = 0
+
 moveThemArround = False
+
+foodCounter = 0
+food = []
+species = []
+
+hard = False
+
 
 display_width = 1200
 display_height = 800
@@ -22,6 +31,10 @@ pygame.display.set_caption('Simulator')
 clock = pygame.time.Clock()
 gameDisplay.fill((255,255,255))
 
+
+
+## ------------------------------------ Functions ------------------------------------
+
 def textBoxClear(text, size, position, color):
     font = pygame.font.Font('LemonMilk.otf', size)
     text = font.render(text, True, color)
@@ -29,69 +42,7 @@ def textBoxClear(text, size, position, color):
     textRect.center = position
     gameDisplay.blit(text, textRect)
 
-class TextBox:
-    def __init__(self, text, size, position, color, location, font):
-        self.text = text
-        self.size = size
-        self.position = position
-        self.color = color
-        self.location = location
-        self.font = font
-        self.display()
 
-    def display(self):
-        font = pygame.font.Font(self.font, self.size)
-        text = font.render(self.text, True, self.color)
-        textRect = text.get_rect()
-
-        if self.location == "l":
-            textRect.midleft = self.position
-        elif self.location == "c":
-            textRect.center = self.position
-        elif self.location == "r":
-            textRect.midright = self.position
-
-        gameDisplay.blit(text, textRect)
-        self.rect = textRect
-
-# class HexImage:
-#     def __init__(self, xPos, yPos, imageSrc):
-#         self.xPos = xPos
-#         self.yPos = yPos
-#         self.image = pygame.image.load(iself.mageSrc)
-#         gameDisplay.blit(self.image, (self.xPos, self.yPos + wobbleHex))
-
-food = []
-class FoodPiece:
-    def __init__(self, size, xPos, yPos, color):
-        self.size = size
-        self.xPos = xPos
-        self.yPos = yPos
-        self.position = (self.xPos, self.yPos)
-        self.color = color
-
-class Member():
-    def __init__(self, size, color, speed, stamina, xPos, yPos, sense, memory, intelligence):
-        self.size = size
-        self.color = color
-        self.colorOG = color
-        self.speed = speed
-        self.stamina = stamina
-        self.xPos = xPos
-        self.yPos = yPos
-        self.sense = sense
-        self.foodInRange = []
-        self.memory = memory
-        self.memoryBank = []
-        self.intelligence = intelligence
-        self.memberFood = 0
-        self.newLocationX = xPos
-        self.newLocationY = yPos
-
-        self.justEaten = 0
-        self.dying = 0
-
-species = []
 def makeMember(speedIt, staminaIt, senseIt, memoryIt):
     memSize = 15
     memColor = (0,0,0)
@@ -113,145 +64,6 @@ def makeFood():
 
     food.append(FoodPiece(foodSize, foodXPos, foodYPos, foodColor))
 
-foodCounter = 0
-
-hard = False
-
-## -------------------------------------- Intro --------------------------------------
-introCounter = 0
-while end == False:
-    clock.tick(60)
-    mx, my = pygame.mouse.get_pos()
-    introCounter += 1
-
-    if introCounter > 255:
-        pygame.draw.rect(gameDisplay, (255,255,255), (0, 0, display_width, display_height))
-    else:
-        pygame.draw.rect(gameDisplay, (introCounter,introCounter,introCounter), (0, 0, display_width, display_height))
-
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            pygame.font.quit()
-            quit()
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_ESCAPE:
-                end = True
-                cont = True
-                pygame.quit()
-                pygame.font.quit()
-                quit()
-            if event.key == pygame.K_c:
-                introCounter = 599
-    
-    if 300 < introCounter < 555:
-        heading = TextBox("A Poping! Software Solution", 40, (600,400), (introCounter - 300,introCounter - 300,introCounter - 300), "c", "LemonMilk.otf")
-    elif introCounter >= 555:
-        heading = TextBox("A Poping! Software Solution", 40, (600,400), (255,255,255), "c", "LemonMilk.otf")
-    else:
-        heading = TextBox("A Poping! Software Solution", 40, (600,400), (0,0,0), "c", "LemonMilk.otf")
-
-    
-    heading.display()
-
-    if introCounter > 600:
-        end = True
-
-    pygame.display.update()
-
-## -------------------------------------- Startup Button --------------------------------------
-cont = False
-mouseDown = False
-gameDisplay.fill((255,255,255))
-textBoxClear("Begin", 300, (display_width / 2, display_height / 2), (0,0,0))
-while cont == False:
-    clock.tick(60)
-    for event in pygame.event.get():
-        mx, my = pygame.mouse.get_pos()
-        if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
-            cont = True
-            end = True
-            pygame.quit()
-            pygame.font.quit()
-            quit()
-        if 245 < mx < 967 and 277 < my < 529:
-            gameDisplay.fill((255,255,255))
-            textBoxClear("Begin", 320, (display_width / 2, display_height / 2), (0,0,0))
-            if event.type == pygame.MOUSEBUTTONDOWN or mouseDown == True:
-                onPlayButton = True
-                mouseDown = True
-                gameDisplay.fill((255,255,255))
-                textBoxClear("Begin", 320, (display_width / 2, display_height / 2), (0,100,0))
-            if event.type == pygame.MOUSEBUTTONUP and mouseDown == True:
-                if onPlayButton == True:
-                    cont = True
-                mouseDown = False
-                gameDisplay.fill((255,255,255))
-        else:
-            gameDisplay.fill((255,255,255))
-            textBoxClear("Begin", 300, (display_width / 2, display_height / 2), (0,0,0))
-        if event.type == pygame.MOUSEBUTTONUP and mouseDown == True:
-            onPlayButton = False
-            mouseDown = False
-    pygame.display.update()
-
-
-## -------------------------------------- Main Menu --------------------------------------
-end = False
-speciesSurvival = False
-creative = False
-uVworld = False
-while end == False:
-    clock.tick(60)
-    mx, my = pygame.mouse.get_pos()
-
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            pygame.font.quit()
-            quit()
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_ESCAPE:
-                cont = True
-                pygame.quit()
-                pygame.font.quit()
-                quit()
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            if 150 < mx < 1170:
-                if 215 < my < 300:
-                    end = True
-                    speciesSurvival = True
-            if 150 < mx < 1170:
-                if 365 < my < 445:
-                    end = True
-                    uVworld = True
-            if 150 < mx < 1170:
-                if 515 < my < 595:
-                    end = True
-                    creative = True
-
-    pygame.draw.rect(gameDisplay, (255,255,255), (0, 0, display_width, display_height))
-
-    heading = TextBox("Species Simulator", 100, (50,100), (0,0,0), "l", "LemonMilk.otf")
-    heading.display()
-
-
-    title1 = TextBox("- Species Survival", 100, (150,250), (50,50,50), "l", "LMLight.otf")
-    title1.display()
-
-
-    title2 = TextBox("- U vs The World", 100, (150,400), (50,50,50), "l", "LMLight.otf")
-    title2.display()
-
-
-    title3 = TextBox("- Creative Mode", 100, (150,550), (50,50,50), "l", "LMLight.otf")
-    title3.display()
-
-    pygame.display.update()
-
-
-
-## -------------------------------------- Nameing --------------------------------------
 def namer():
     global naming
     naming = True
@@ -319,7 +131,205 @@ def namer():
 
         pygame.display.update()
 
+
+## ------------------------------------ Classes ------------------------------------
+class TextBox:
+    def __init__(self, text, size, position, color, location, font):
+        self.text = text
+        self.size = size
+        self.position = position
+        self.color = color
+        self.location = location
+        self.font = font
+        self.display()
+
+    def display(self):
+        font = pygame.font.Font(self.font, self.size)
+        text = font.render(self.text, True, self.color)
+        textRect = text.get_rect()
+
+        if self.location == "l":
+            textRect.midleft = self.position
+        elif self.location == "c":
+            textRect.center = self.position
+        elif self.location == "r":
+            textRect.midright = self.position
+
+        gameDisplay.blit(text, textRect)
+        self.rect = textRect
+
+class FoodPiece:
+    def __init__(self, size, xPos, yPos, color):
+        self.size = size
+        self.xPos = xPos
+        self.yPos = yPos
+        self.position = (self.xPos, self.yPos)
+        self.color = color
+
+class Member():
+    def __init__(self, size, color, speed, stamina, xPos, yPos, sense, memory, intelligence):
+        self.size = size
+        self.color = color
+        self.colorOG = color
+        self.speed = speed
+        self.stamina = stamina
+        self.xPos = xPos
+        self.yPos = yPos
+        self.sense = sense
+        self.foodInRange = []
+        self.memory = memory
+        self.memoryBank = []
+        self.intelligence = intelligence
+        self.memberFood = 0
+        self.newLocationX = xPos
+        self.newLocationY = yPos
+
+        self.justEaten = 0
+        self.dying = 0
+
+
+
+## -------------------------------------- Intro --------------------------------------
+introCounter = 0
+while end == False:
+    clock.tick(60)
+    mx, my = pygame.mouse.get_pos()
+    introCounter += 1
+
+    if introCounter > 255:
+        pygame.draw.rect(gameDisplay, (255,255,255), (0, 0, display_width, display_height))
+    else:
+        pygame.draw.rect(gameDisplay, (introCounter,introCounter,introCounter), (0, 0, display_width, display_height))
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            pygame.font.quit()
+            quit()
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                end = True
+                cont = True
+                pygame.quit()
+                pygame.font.quit()
+                quit()
+            if event.key == pygame.K_c:
+                introCounter = 599
+    
+    if 300 < introCounter < 555:
+        heading = TextBox("A Poping! Software Solution", 40, (600,400), (introCounter - 300,introCounter - 300,introCounter - 300), "c", "LemonMilk.otf")
+    elif introCounter >= 555:
+        heading = TextBox("A Poping! Software Solution", 40, (600,400), (255,255,255), "c", "LemonMilk.otf")
+    else:
+        heading = TextBox("A Poping! Software Solution", 40, (600,400), (0,0,0), "c", "LemonMilk.otf")
+
+    
+    heading.display()
+
+    if introCounter > 600:
+        end = True
+
+    pygame.display.update()
+
+
+
+## -------------------------------------- Startup Button --------------------------------------
+cont = False
+mouseDown = False
+gameDisplay.fill((255,255,255))
+textBoxClear("Begin", 300, (display_width / 2, display_height / 2), (0,0,0))
+while cont == False:
+    clock.tick(60)
+    for event in pygame.event.get():
+        mx, my = pygame.mouse.get_pos()
+        if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
+            cont = True
+            end = True
+            pygame.quit()
+            pygame.font.quit()
+            quit()
+        if 245 < mx < 967 and 277 < my < 529:
+            gameDisplay.fill((255,255,255))
+            textBoxClear("Begin", 320, (display_width / 2, display_height / 2), (0,0,0))
+            if event.type == pygame.MOUSEBUTTONDOWN or mouseDown == True:
+                onPlayButton = True
+                mouseDown = True
+                gameDisplay.fill((255,255,255))
+                textBoxClear("Begin", 320, (display_width / 2, display_height / 2), (0,100,0))
+            if event.type == pygame.MOUSEBUTTONUP and mouseDown == True:
+                if onPlayButton == True:
+                    cont = True
+                mouseDown = False
+                gameDisplay.fill((255,255,255))
+        else:
+            gameDisplay.fill((255,255,255))
+            textBoxClear("Begin", 300, (display_width / 2, display_height / 2), (0,0,0))
+        if event.type == pygame.MOUSEBUTTONUP and mouseDown == True:
+            onPlayButton = False
+            mouseDown = False
+    pygame.display.update()
+
+
+
+## -------------------------------------- Main Menu --------------------------------------
+end = False
+speciesSurvival = False
+creative = False
+uVworld = False
+while end == False:
+    clock.tick(60)
+    mx, my = pygame.mouse.get_pos()
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            pygame.font.quit()
+            quit()
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                cont = True
+                pygame.quit()
+                pygame.font.quit()
+                quit()
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if 150 < mx < 1170:
+                if 215 < my < 300:
+                    end = True
+                    speciesSurvival = True
+            if 150 < mx < 1170:
+                if 365 < my < 445:
+                    end = True
+                    uVworld = True
+            if 150 < mx < 1170:
+                if 515 < my < 595:
+                    end = True
+                    creative = True
+
+    pygame.draw.rect(gameDisplay, (255,255,255), (0, 0, display_width, display_height))
+
+    heading = TextBox("Species Simulator", 100, (50,100), (0,0,0), "l", "LemonMilk.otf")
+    heading.display()
+
+
+    title1 = TextBox("- Species Survival", 100, (150,250), (50,50,50), "l", "LMLight.otf")
+    title1.display()
+
+
+    title2 = TextBox("- U vs The World", 100, (150,400), (50,50,50), "l", "LMLight.otf")
+    title2.display()
+
+
+    title3 = TextBox("- Creative Mode", 100, (150,550), (50,50,50), "l", "LMLight.otf")
+    title3.display()
+
+    pygame.display.update()
+
+
+
+## -------------------------------------- Nameing --------------------------------------
 namer()
+
+
 
 ## -------------------------------------- DNA Config --------------------------------------
 DNAing = True
@@ -541,7 +551,6 @@ while DNAing == True:
         gameDisplay.blit(hexSpe, (hexSpeedXpos, hexSpeedYpos + wobbleHex))
     
 
-
     if my in range(int(hexStaminaYpos), int(hexStaminaYpos) + 80):
         if mx in range(hexStaminaXpos, hexStaminaXpos + 80):
             if mouseButtonIsDown == False:
@@ -631,6 +640,8 @@ while DNAing == True:
 ## -------------------------------------- Initialising --------------------------------------
 cont = False
 foodItemPoints = 0
+
+
 
 ## -------------------------------------- Creative --------------------------------------
 if creative == True:
@@ -727,8 +738,6 @@ if creative == True:
             mem.stamina = speciesStamina
             mem.memory = speciesMemory
 
-            # if mem.intelligence == 1:
-
             mem.foodInRange = []
             mem.dying += 0.05
 
@@ -739,7 +748,7 @@ if creative == True:
                 if mem.justEaten != 0:
                     mem.justEaten -= 5
                 
-                if (150*mem.dying)/mem.stamina) < 150:
+                if ((150*mem.dying)/mem.stamina) < 150:
                     mem.color = (0 + ((150*mem.dying)/mem.stamina), 0 + ((150*mem.dying)/mem.stamina) + mem.justEaten, 0 + ((150*mem.dying)/mem.stamina))
                 else:
                     mem.color = (150, 150 + mem.justEaten, 150)
@@ -782,6 +791,7 @@ if creative == True:
                     mem.yPos += ((closest.yPos - mem.yPos)/closestDistance)*((mem.speed)**(1/2))
 
                     mem.dying += mem.speed*0.01
+
                 elif moveThemArround == True: 
                     newDistance = (((mem.xPos - mem.newLocationX)**2) + ((mem.yPos - mem.newLocationY)**2))**(1/2) 
                     if -mem.size < newDistance < mem.size:
@@ -865,6 +875,8 @@ if creative == True:
 
         pygame.display.update()
 
+
+
 ## -------------------------------------- u V world Sub-Menu --------------------------------------
 if uVworld == True:
     end = False
@@ -903,6 +915,8 @@ if uVworld == True:
 
         pygame.display.update()
 
+
+
 ## -------------------------------------- u V world --------------------------------------
 if uVworld == True:
 
@@ -938,6 +952,27 @@ if uVworld == True:
     uSpecies = [Member(memSize, memColor, memSpeed, memStamina, memXPos, memYPos, memSense, memMemory, memIntelligence)]
 
     for i in range(1,12):
+
+        picker = random.randrange(1,5)
+        if picker == 1:
+            DNAslot1 = 'speed'
+        elif picker == 2:
+            DNAslot1 = 'stamina'
+        elif picker == 3:
+            DNAslot1 = 'sense'
+        elif picker == 4:
+            DNAslot1 = 'memory'
+        
+        picker = random.randrange(1,5)
+        if picker == 1:
+            DNAslot2 = 'speed'
+        elif picker == 2:
+            DNAslot2 = 'stamina'
+        elif picker == 3:
+            DNAslot2 = 'sense'
+        elif picker == 4:
+            DNAslot2 = 'memory'
+
         memSize = 15
         memColor = (random.randrange(1,254),random.randrange(1,254),random.randrange(1,254))
         memSpeed = 1
@@ -947,6 +982,15 @@ if uVworld == True:
         memYPos = random.randrange(15,display_height - 15)
         memMemory = 1
         memIntelligence = 1
+
+        if DNAslot1 == 'speed' or DNAslot2 == 'speed':
+            memSpeed = 3
+        if DNAslot1 == 'stamina' or DNAslot2 == 'stamina':
+            memStamina = 250
+        if DNAslot1 == 'sense' or DNAslot2 == 'sense':
+            memSense = 125
+        if DNAslot1 == 'memory' or DNAslot2 == 'memory':
+            memMemory = 5
 
         species.append(Member(memSize, memColor, memSpeed, memStamina, memXPos, memYPos, memSense, memMemory, memIntelligence))
         
@@ -977,9 +1021,6 @@ if uVworld == True:
                     aIsDown = True
                 if event.key == pygame.K_d:
                     dIsDown = True
-
-                if event.key == pygame.K_o:
-                    species = [Member(memSize, memColor, memSpeed, memStamina, memXPos, memYPos, memSense, memMemory, memIntelligence)] #JESUS CHRIST
             
             if event.type == pygame.KEYUP:
                 
@@ -1046,9 +1087,6 @@ if uVworld == True:
                 mem.dying += mem.speed*0.01
 
         for mem in species:
-
-            # if mem.intelligence == 1:
-
             mem.foodInRange = []
             mem.dying += 0.05
 
@@ -1075,7 +1113,7 @@ if uVworld == True:
                 if mem.justEaten != 0:
                     mem.justEaten -= 5
                 
-                if (150*mem.dying)/mem.stamina) < 150:
+                if ((150*mem.dying)/mem.stamina) < 150:
                     mem.color = (0 + ((150*mem.dying)/mem.stamina), 0 + ((150*mem.dying)/mem.stamina) + mem.justEaten, 0 + ((150*mem.dying)/mem.stamina))
                 else:
                     mem.color = (150, 150 + mem.justEaten, 150)
@@ -1141,9 +1179,6 @@ if uVworld == True:
             mem.sense = speciesSense
             mem.stamina = speciesStamina
             mem.memory = speciesMemory
-
-            # if mem.intelligence == 1:
-
             mem.foodInRange = []
             mem.dying += 0.05
 
@@ -1154,7 +1189,7 @@ if uVworld == True:
                 if mem.justEaten != 0:
                     mem.justEaten -= 5
                 
-                if (150*mem.dying)/mem.stamina) < 150:
+                if ((150*mem.dying)/mem.stamina) < 150:
                     mem.color = (0 + ((150*mem.dying)/mem.stamina), 0 + ((150*mem.dying)/mem.stamina) + mem.justEaten, 0 + ((150*mem.dying)/mem.stamina))
                 else:
                     mem.color = (150, 150 + mem.justEaten, 150)
@@ -1204,10 +1239,6 @@ if uVworld == True:
                         if len(mem.memoryBank) < mem.memory:
                             if item not in mem.memoryBank:
                                 mem.memoryBank.append(item)
-
-
-
-
 
         pygame.draw.rect(gameDisplay, (255,255,255), (0, 0, display_width, display_height))
                     
@@ -1294,11 +1325,11 @@ if uVworld == True:
         rmnTxt = TextBox("Remaining: " + str(len(species) + len(uSpecies)) + "/12", 15, (965,600), (0,0,0), "l", "LemonMilk.otf")
         
         if len(species) > 0:
-            if foodCounter >= 540/len(species):
+            if foodCounter >= 700/len(species):
                 makeFood()
                 foodCounter = 0
         else:
-            if foodCounter >= 540:
+            if foodCounter >= 700:
                 makeFood()
                 foodCounter = 0
 
@@ -1307,6 +1338,8 @@ if uVworld == True:
             cont = True
 
         pygame.display.update()
+
+
 
 ## -------------------------------------- Species Survival --------------------------------------
 if speciesSurvival == True:
@@ -1385,6 +1418,12 @@ if speciesSurvival == True:
                     if foodItemPoints > 0:
                         speciesMemory += 1
                         foodItemPoints -= 1
+                
+                if mx in range(965,1045) and my in range(615,655):
+                    if moveThemArround == True:
+                        moveThemArround = False
+                    else:
+                        moveThemArround = True
 
         
 
@@ -1394,8 +1433,6 @@ if speciesSurvival == True:
             mem.sense = speciesSense
             mem.stamina = speciesStamina
             mem.memory = speciesMemory
-
-            # if mem.intelligence == 1:
 
             mem.foodInRange = []
             mem.dying += 0.05
@@ -1408,7 +1445,7 @@ if speciesSurvival == True:
                     mem.justEaten -= 5
 
 
-                if (150*mem.dying)/mem.stamina) < 150:
+                if ((150*mem.dying)/mem.stamina) < 150:
                     mem.color = (0 + ((150*mem.dying)/mem.stamina), 0 + ((150*mem.dying)/mem.stamina) + mem.justEaten, 0 + ((150*mem.dying)/mem.stamina))
                 else:
                     mem.color = (150, 150 + mem.justEaten, 150)
@@ -1519,12 +1556,22 @@ if speciesSurvival == True:
 
         rmnTxt = TextBox("Remaining: " + str(len(species)) + "/9", 15, (965,550), (0,0,0), "l", "LemonMilk.otf")
         
+
+        mvnTxt = TextBox("Self-Move" , 15, (965,600), (0,0,0), "l", "LemonMilk.otf")
+        if moveThemArround == True:
+            mvnImg = pygame.image.load('on.png')
+        else:
+            mvnImg = pygame.image.load('off.png')
+        gameDisplay.blit(mvnImg, (965, 615))
+        
         
         if foodCounter == 60:
             makeFood()
             foodCounter = 0
 
         pygame.display.update()
+
+
 
 # ------------------------------------------- Game Over -----------------------------------------------
 ender = False
@@ -1573,7 +1620,9 @@ while ender == False:
                 pygame.font.quit()
                 quit()
 
-# ------------------------------------------- Game Over Pygame Closer -----------------------------------------------
+
+
+# ------------------------------------------- Pygame Closer -----------------------------------------------
 print("Awaiting End")
 pygame.quit()
 pygame.font.quit()
