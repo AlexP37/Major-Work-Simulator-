@@ -295,11 +295,11 @@ while end == False:
             if 150 < mx < 1170:
                 if 215 < my < 300:
                     end = True
-                    speciesSurvival = True
+                    uVworld = True
             if 150 < mx < 1170:
                 if 365 < my < 445:
                     end = True
-                    uVworld = True
+                    speciesSurvival = True
             if 150 < mx < 1170:
                 if 515 < my < 595:
                     end = True
@@ -307,19 +307,28 @@ while end == False:
 
     pygame.draw.rect(gameDisplay, (255,255,255), (0, 0, display_width, display_height))
 
+
     heading = TextBox("Species Simulator", 100, (50,100), (0,0,0), "l", "LemonMilk.otf")
     heading.display()
 
-
-    title1 = TextBox("- Species Survival", 100, (150,250), (50,50,50), "l", "LMLight.otf")
+    if 150 < mx < 1170 and 215 < my < 300: 
+        title1 = TextBox("- U vs The World", 100, (150,250), (50,50,120), "l", "LMLight.otf")
+    else:
+        title1 = TextBox("- U vs The World", 100, (150,250), (50,50,50), "l", "LMLight.otf")
     title1.display()
 
-
-    title2 = TextBox("- U vs The World", 100, (150,400), (50,50,50), "l", "LMLight.otf")
+    if 150 < mx < 1170 and 365 < my < 445:
+        print("a")
+        title2 = TextBox("- Species Survival", 100, (150,400), (50,50,120), "l", "LMLight.otf")
+    else:
+        print("b")
+        title2 = TextBox("- Species Survival", 100, (150,400), (50,50,50), "l", "LMLight.otf")
     title2.display()
 
-
-    title3 = TextBox("- Creative Mode", 100, (150,550), (50,50,50), "l", "LMLight.otf")
+    if 150 < mx < 1170 and  515 < my < 595:
+        title3 = TextBox("- Creative Mode", 100, (150,550), (50,50,120), "l", "LMLight.otf")
+    else:
+        title3 = TextBox("- Creative Mode", 100, (150,550), (50,50,50), "l", "LMLight.otf")
     title3.display()
 
     pygame.display.update()
