@@ -1,0 +1,3 @@
+#### A Note on GUI Design and Internal Help
+
+Internal Help is imbeded within the application through information revieled upon hover such as genome information. On hover, buttons of meer text will give an indication they are clickable (size change, color change, ect). Other information such as promps and help is given as on screen instructions in the limited moments where the user may be confused as to what they are meant to be doing such as the naming process. All other promps are given through the UI simplicity, forgivness, consistance and use of web-standardised iconography.
